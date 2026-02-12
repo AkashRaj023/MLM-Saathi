@@ -1,0 +1,7 @@
+{
+  "name": "MLM Nexus W- Ecosystem Architect",
+  "description": "A high-performance MLM ecosystem platform featuring real-time genealogy mapping, financial ledgers, and AI-driven performance analytics for vendors, merchants, and distributors.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
