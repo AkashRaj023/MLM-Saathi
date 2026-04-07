@@ -37,6 +37,12 @@ const AnalyticsBoard: React.FC = () => {
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={MOCK_PERFORMANCE}>
+              <defs>
+                <linearGradient id="colorMembers" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0.3}/>
+                </linearGradient>
+              </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
               <XAxis dataKey="date" stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} />
               <YAxis stroke="var(--text-secondary)" fontSize={10} tickLine={false} axisLine={false} />
@@ -44,11 +50,7 @@ const AnalyticsBoard: React.FC = () => {
                 cursor={{ fill: 'var(--accent-soft)' }}
                 contentStyle={{ backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '16px' }}
               />
-              <Bar dataKey="newMembers" radius={[6, 6, 0, 0]}>
-                {MOCK_PERFORMANCE.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={index === MOCK_PERFORMANCE.length - 1 ? 'var(--accent-primary)' : 'var(--text-secondary)'} opacity={0.6} />
-                ))}
-              </Bar>
+              <Bar dataKey="newMembers" fill="url(#colorMembers)" radius={[6, 6, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
