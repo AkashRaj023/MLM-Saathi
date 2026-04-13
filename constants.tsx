@@ -1,129 +1,48 @@
+import { APINode, Incident, SLAAttribution, RevenueShieldData, ConduitUser, UserRole } from './types.ts';
 
-import { UserRole, User, Merchant, NewsItem, Transaction, PerformanceMetric, GenealogyNode } from './types.ts';
+export const APP_NAME = "Conduit";
+export const TAGLINE = "Conduit — India's API reliability operating system for Open Banking.";
 
-export const APP_NAME = "NexSaathi";
-
-export const COLORS = {
-  primary: '#00d09c',
-  accent: '#1a73e8', // Google Blue
-  bg: '#0f172a',
-  surface: '#1e293b'
+export const ENTERPRISE_CLIENT = {
+  name: "Enterprise Client",
+  healthScore: 92,
+  aumAtRisk: 14.2,
+  criticalIncidents: 2
 };
 
-export const ACCENT_COLORS = [
-  { name: 'Nexus Teal', value: '#00d09c' },
-  { name: 'Royal Blue', value: '#1a73e8' },
-  { name: 'Indian Saffron', value: '#ff9933' },
-  { name: 'Deep Purple', value: '#6200ee' }
+export const API_NODES: APINode[] = [
+  { id: 'node-1', name: 'Primary FIP Gateway', type: 'BANK', category: 'AGGREGATION', latency: 142, successRate: 99.8, errorRate: 0.2, latencyTrend: [140, 145, 142, 138, 142], status: 'HEALTHY', slaThreshold: 200, failGuardRisk: 'LOW' },
+  { id: 'node-2', name: 'Partner UPI Node', type: 'BANK', category: 'UPI', latency: 485, successRate: 94.2, errorRate: 5.8, latencyTrend: [420, 450, 480, 490, 485], status: 'CRITICAL', slaThreshold: 500, failGuardRisk: 'HIGH' },
+  { id: 'node-3', name: 'Ecosystem AA', type: 'AA', category: 'AGGREGATION', latency: 210, successRate: 98.5, errorRate: 1.5, latencyTrend: [200, 205, 215, 210, 210], status: 'WARNING', slaThreshold: 300, failGuardRisk: 'MEDIUM' },
+  { id: 'node-4', name: 'Asset FIU Node', type: 'AMC', category: 'WEALTH', latency: 320, successRate: 99.1, errorRate: 0.9, latencyTrend: [310, 315, 325, 320, 320], status: 'HEALTHY', slaThreshold: 400, failGuardRisk: 'LOW' },
 ];
 
-export const MOCK_MERCHANTS: Merchant[] = [
-  { id: 'm1', name: 'Ayush Tiwari', network: 'Varanasi Central', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AyushT', status: 'ACTIVE', performanceScore: 94, specialization: 'FMCG', recentSales: [40, 55, 30, 80, 55, 90, 70] },
-  { id: 'm2', name: 'Ankit Sharma', network: 'Indore Hub', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AnkitS', status: 'ACTIVE', performanceScore: 88, specialization: 'Health', recentSales: [20, 30, 45, 40, 60, 50, 65] },
-  { id: 'm3', name: 'Abhay Pratap', network: 'Lucknow North', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AbhayP', status: 'ACTIVE', performanceScore: 76, specialization: 'Lifestyle', recentSales: [10, 20, 15, 30, 25, 40, 35] },
-  { id: 'm4', name: 'Shubham Mishra', network: 'Delhi Metro', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=ShubhamM', status: 'INACTIVE', performanceScore: 45, specialization: 'Retail', recentSales: [40, 35, 30, 25, 20, 15, 10] },
-  { id: 'm5', name: 'Yuvraj Singh', network: 'Chandigarh Star', avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=YuvrajS', status: 'ACTIVE', performanceScore: 92, specialization: 'Agri-Tech', recentSales: [60, 70, 65, 80, 75, 90, 85] }
+export const INCIDENTS: Incident[] = [
+  { id: 'INC-2026-001', timestamp: '2026-04-13T10:15:00Z', severity: 'P1', partnerNodeId: 'node-2', partnerName: 'Partner UPI Node', type: 'LATENCY_SPIKE', status: 'ATTRIBUTED', aumAtRisk: 8.4, mttr: '1h 12m', owner: 'System Admin', traceId: 'tr-99281-ax' },
+  { id: 'INC-2026-002', timestamp: '2026-04-13T11:45:00Z', severity: 'P2', partnerNodeId: 'node-3', partnerName: 'Ecosystem AA', type: 'SLA_BREACH', status: 'CLASSIFIED', aumAtRisk: 5.8, mttr: '24m', owner: 'Ops Lead', traceId: 'tr-99282-by' },
 ];
 
-export const AKASH_RAJ: User = {
-  id: 'akash-001',
-  name: 'Akash Raj',
-  email: 'akash.raj@nexsaathi.in',
-  role: UserRole.DISTRIBUTOR,
-  rank: 'Strategic Lead',
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Akash',
-  pv: 25800,
-  bv: 980000,
-  balance: 145200.00,
-  preferences: {
-    theme: 'dark',
-    accentColor: '#00d09c',
-    accentIntensity: 'standard'
-  }
-};
-
-export const LEADERBOARD = [
-  { name: 'Vikram Singh', volume: '₹12.4L', growth: '+15%' },
-  { name: 'Rajesh Kumar', volume: '₹10.8L', growth: '+12%' },
-  { name: 'Priya Verma', volume: '₹9.2L', growth: '+18%' },
-  { name: 'Sanjay Gupta', volume: '₹8.5L', growth: '+9%' },
+export const SLA_ATTRIBUTIONS: SLAAttribution[] = [
+  { partnerId: 'node-1', partnerName: 'Primary FIP Gateway', partnerType: 'BANK', slaIndex: 98, breachesMonth: 2, downtimeMinutes: 14, avgLatency: 145, revenueImpact: 0.8, failGuardRisk: 'LOW' },
+  { partnerId: 'node-2', partnerName: 'Partner UPI Node', partnerType: 'BANK', slaIndex: 64, breachesMonth: 18, downtimeMinutes: 240, avgLatency: 492, revenueImpact: 12.4, failGuardRisk: 'HIGH' },
+  { partnerId: 'node-3', partnerName: 'Ecosystem AA', partnerType: 'AA', slaIndex: 82, breachesMonth: 8, downtimeMinutes: 95, avgLatency: 215, revenueImpact: 4.2, failGuardRisk: 'MEDIUM' },
 ];
 
-export const SUPPORT_CATEGORIES = [
-  { id: 'billing', label: 'Payouts & TDS', icon: 'billing' },
-  { id: 'kyc', label: 'Aadhar & Bank KYC', icon: 'kyc' },
-  { id: 'network', label: 'Downline Chain', icon: 'network' },
-  { id: 'merchants', label: 'Shop Integration', icon: 'merchants' },
-  { id: 'compliance', label: 'Legal Policies', icon: 'compliance' },
+export const REVENUE_TRENDS: RevenueShieldData[] = [
+  { month: 'Jan', leakage: 4.2, protected: 18.5, incidentsPrevented: 142 },
+  { month: 'Feb', leakage: 3.8, protected: 22.1, incidentsPrevented: 168 },
+  { month: 'Mar', leakage: 5.1, protected: 19.8, incidentsPrevented: 155 },
 ];
 
-export const REGULATORY_NEWS: NewsItem[] = [
-  { id: 'n1', title: 'Direct Selling (Consumer Protection) Rules 2024 Update', source: 'Ministry of Consumer Affairs', url: '#', date: 'Mar 12, 2024', category: 'REGULATORY' },
-  { id: 'n2', title: 'TDS Rate Revision for MLM Commissions Section 194H', source: 'Income Tax Dept', url: '#', date: 'Feb 28, 2024', category: 'GOVERNMENT' },
-  { id: 'n3', title: 'Growing Trends in Direct-to-Home Distribution', source: 'FICCI Report', url: '#', date: 'Jan 20, 2024', category: 'MARKET' }
+export const CONDUIT_USERS: ConduitUser[] = [
+  { id: 'u-1', name: 'System Admin', email: 'abc123@conduit.ac.in', role: UserRole.CTO, lastLogin: '2026-04-13T09:00:00Z', permissions: ['hub', 'scorecard', 'shield', 'incidents', 'ai', 'graph', 'compliance', 'config', 'assistant'] },
+  { id: 'u-2', name: 'Ops Lead', email: 'demo@conduit.ac.in', role: UserRole.API_OPS_HEAD, lastLogin: '2026-04-13T08:30:00Z', permissions: ['hub', 'incidents', 'ai', 'assistant'] },
 ];
 
-export const MOCK_PERFORMANCE: PerformanceMetric[] = [
-  { date: 'Oct', growth: 12, revenue: 120000, newMembers: 30 },
-  { date: 'Nov', growth: 18, revenue: 152000, newMembers: 45 },
-  { date: 'Dec', growth: 25, revenue: 265000, newMembers: 85 },
-  { date: 'Jan', growth: 32, revenue: 378000, newMembers: 120 },
-  { date: 'Feb', growth: 28, revenue: 410000, newMembers: 110 }
-];
-
-export const MOCK_TRANSACTIONS: Transaction[] = [
-  { id: 't1', type: 'COMMISSION', amount: 45000, status: 'COMPLETED', date: '2024-03-10', description: 'Feb Generation Bonus' },
-  { id: 't2', type: 'WALLET_RECHARGE', amount: 5000, status: 'COMPLETED', date: '2024-03-05', description: 'Internal Transfer' },
-  { id: 't3', type: 'PAYOUT', amount: -20000, status: 'PENDING', date: '2024-03-02', description: 'Bank Settlement' }
-];
-
-export const MOCK_PORTFOLIO = [
-  { name: 'Business Volume', value: 450000, color: '#00d09c' },
-  { name: 'Vesting Assets', value: 280000, color: '#1a73e8' },
-  { name: 'Reserve Pool', value: 150000, color: '#ff9933' },
-  { name: 'Liquid Bonus', value: 120000, color: '#6200ee' }
-];
-
-// Add missing MOCK_GENEALOGY export to fix errors in NetworkGenealogy.tsx and AIInsightsPanel.tsx
-export const MOCK_GENEALOGY: GenealogyNode = {
-  id: 'akash-001',
-  name: 'Akash Raj',
-  rank: 'Strategic Lead',
-  role: UserRole.DISTRIBUTOR,
-  pv: 25800,
-  bv: 980000,
-  children: [
-    {
-      id: 'vikram-002',
-      name: 'Vikram Singh',
-      rank: 'Diamond Director',
-      role: UserRole.DISTRIBUTOR,
-      pv: 12000,
-      bv: 450000,
-      children: [
-        { id: 'raj-004', name: 'Rajesh Kumar', rank: 'Platinum', role: UserRole.DISTRIBUTOR, pv: 5000, bv: 180000 },
-        { id: 'priya-005', name: 'Priya Verma', rank: 'Gold', role: UserRole.DISTRIBUTOR, pv: 4200, bv: 150000 },
-      ]
-    },
-    {
-      id: 'ankit-003',
-      name: 'Ankit Sharma',
-      rank: 'Emerald Director',
-      role: UserRole.DISTRIBUTOR,
-      pv: 8500,
-      bv: 320000,
-      children: [
-        { id: 'sanjay-006', name: 'Sanjay Gupta', rank: 'Silver', role: UserRole.DISTRIBUTOR, pv: 3000, bv: 110000 },
-      ]
-    }
-  ]
-};
-
-// Add missing MOCK_EXPENSES export to fix error in ExpenseTracker.tsx
-export const MOCK_EXPENSES = [
-  { id: 'e1', date: '2024-03-01', title: 'Cloud Infrastructure', category: 'Tech', amount: 12000 },
-  { id: 'e2', date: '2024-03-05', title: 'Marketing Campaign', category: 'Growth', amount: 45000 },
-  { id: 'e3', date: '2024-03-08', title: 'Legal Consultation', category: 'Legal', amount: 8000 },
-  { id: 'e4', date: '2024-03-12', title: 'Office Maintenance', category: 'Operational', amount: 5000 },
-  { id: 'e5', date: '2024-03-15', title: 'API Subscriptions', category: 'Tech', amount: 3500 },
+export const REVENUE_MAPPINGS = [
+  { transactionType: 'SIP Initiation', averageValue: 5000 },
+  { transactionType: 'Portfolio Rebalancing', averageValue: 50000 },
+  { transactionType: 'MF Redemption', averageValue: 25000 },
+  { transactionType: 'Consent Flow Completion', averageValue: 1000 },
+  { transactionType: 'Account Statement Fetch', averageValue: 500 },
 ];

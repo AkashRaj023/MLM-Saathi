@@ -1,81 +1,77 @@
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  VENDOR = 'VENDOR',
-  MERCHANT = 'MERCHANT',
-  DISTRIBUTOR = 'DISTRIBUTOR'
+  CTO = 'CTO',
+  API_OPS_HEAD = 'API_OPS_HEAD',
+  SLA_MANAGER = 'SLA_MANAGER',
+  REVENUE_ANALYST = 'REVENUE_ANALYST'
 }
 
-export type AccentIntensity = 'soft' | 'standard' | 'vivid';
-
-export interface UIPreferences {
-  theme: 'light' | 'dark';
-  accentColor: string;
-  accentIntensity: AccentIntensity;
-}
-
-export interface User {
+export interface ConduitUser {
   id: string;
-  name: string;
   email: string;
+  name: string;
   role: UserRole;
-  rank: string;
-  avatar?: string;
-  pv: number;
-  bv: number;
-  balance: number;
-  preferences: UIPreferences;
+  lastLogin: string;
+  permissions: string[]; // Module IDs
 }
 
-export interface Merchant {
+export interface APINode {
   id: string;
   name: string;
-  network: string;
-  avatar: string;
-  status: 'ACTIVE' | 'INACTIVE';
-  performanceScore: number;
-  specialization: string;
-  recentSales: number[];
+  type: 'BANK' | 'AA' | 'FIU' | 'AMC' | 'FINTECH' | 'GATEWAY';
+  category: APICategory;
+  latency: number;
+  successRate: number;
+  errorRate: number;
+  latencyTrend: number[]; // 1h sparkline
+  status: 'HEALTHY' | 'WARNING' | 'CRITICAL';
+  slaThreshold: number;
+  failGuardRisk: 'HIGH' | 'MEDIUM' | 'LOW';
 }
 
-export interface NewsItem {
+export interface Incident {
   id: string;
-  title: string;
-  source: string;
-  url: string;
-  date: string;
-  category: 'REGULATORY' | 'GOVERNMENT' | 'MARKET';
+  timestamp: string;
+  severity: 'P1' | 'P2' | 'P3';
+  partnerNodeId: string;
+  partnerName: string;
+  type: 'LATENCY_SPIKE' | 'API_FAILURE' | 'SLA_BREACH' | 'PREDICTED_FAILURE';
+  status: 'DETECTED' | 'CLASSIFIED' | 'ATTRIBUTED' | 'ACTION_TAKEN' | 'RESOLVED';
+  aumAtRisk: number; // ₹ Crore
+  mttr: string;
+  owner: string;
+  traceId: string;
 }
 
-export interface SupportTicket {
-  id: string;
-  query: string;
-  status: 'RESOLVED' | 'ESCALATED' | 'PENDING';
-  aiResponse?: string;
+export interface SLAAttribution {
+  partnerId: string;
+  partnerName: string;
+  partnerType: string;
+  slaIndex: number; // 0-100
+  breachesMonth: number;
+  downtimeMinutes: number;
+  avgLatency: number;
+  revenueImpact: number; // ₹ Crore
+  failGuardRisk: 'HIGH' | 'MEDIUM' | 'LOW';
 }
 
-export interface GenealogyNode {
-  id: string;
-  name: string;
-  rank: string;
-  role: UserRole;
-  children?: GenealogyNode[];
-  pv: number;
-  bv: number;
+export interface RevenueMapping {
+  transactionType: string;
+  averageValue: number; // ₹
 }
 
-export interface PerformanceMetric {
-  date: string;
-  growth: number;
-  revenue: number;
-  newMembers: number;
+export type APICategory = 'LENDING' | 'PAYMENTS' | 'AGGREGATION' | 'WEALTH' | 'UPI' | 'GST';
+
+export interface RevenueShieldData {
+  month: string;
+  leakage: number; // ₹ Crore
+  protected: number; // ₹ Crore
+  incidentsPrevented: number;
 }
 
-export interface Transaction {
-  id: string;
-  type: 'COMMISSION' | 'PAYOUT' | 'PURCHASE' | 'TRANSFER' | 'WALLET_RECHARGE';
-  amount: number;
-  status: 'PENDING' | 'COMPLETED' | 'FAILED';
-  date: string;
-  description: string;
+export interface SystemHealth {
+  score: number;
+  aumAtRisk: number;
+  criticalIncidents: number;
+  bankName: string;
 }
