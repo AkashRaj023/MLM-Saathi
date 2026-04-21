@@ -104,49 +104,64 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
         </div>
 
         {/* System Admin Avatar with Rotating Ring */}
-        <div className="relative shrink-0 ml-4 z-10">
-          <div className="absolute inset-[-4px] rounded-full border border-dashed border-[#00B4D8]/30 animate-spin-slow pointer-events-none" />
+        <div className="relative shrink-0 ml-4 z-[70] group">
+          <div className="absolute inset-[-4px] rounded-full border-2 border-dashed border-[#00B4D8]/10 animate-spin-slow pointer-events-none group-hover:border-[#00B4D8]/40 transition-all" />
           <button 
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-black text-white hover:bg-white/20 transition-all border border-white/10 relative z-10"
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black transition-all border relative z-[80] ${
+              isProfileOpen ? 'bg-[#00B4D8] border-[#00B4D8] text-white shadow-[0_0_15px_rgba(0,180,216,0.5)]' : 'bg-white/10 text-white border-white/10 hover:bg-white/20'
+            }`}
           >
             SA
           </button>
           
           {isProfileOpen && (
-            <div className="absolute right-0 mt-3 w-[240px] bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden z-[70] animate-fade-in origin-top-right">
-              <div className="p-5 border-b border-gray-100 bg-gray-50/50">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-[#00B4D8] text-white flex items-center justify-center font-black text-xs">SA</div>
-                  <div>
-                    <p className="text-[12px] font-black text-[#0A1628] leading-tight uppercase tracking-wider">System Admin</p>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                       <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                       <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Now</span>
+            <>
+              {/* Click-outside backdrop */}
+              <div 
+                className="fixed inset-0 z-[65] bg-black/0" 
+                onClick={() => setIsProfileOpen(false)} 
+              />
+              <div className="absolute right-0 mt-3 w-[240px] bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden z-[70] animate-fade-in origin-top-right">
+                <div className="p-5 border-b border-gray-100 bg-gray-50/50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-full bg-[#00B4D8] text-white flex items-center justify-center font-black text-xs shadow-inner">SA</div>
+                    <div>
+                      <p className="text-[12px] font-black text-[#0A1628] leading-tight uppercase tracking-wider">System Admin</p>
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Now</span>
+                      </div>
                     </div>
                   </div>
+                  <p className="text-[10px] text-gray-400 font-medium px-1">admin@conduit.inc</p>
                 </div>
-                <p className="text-[10px] text-gray-400 font-medium px-1">admin@conduit.inc</p>
+                <div className="py-2">
+                  <button 
+                    onClick={() => { setActiveTab('config'); setIsProfileOpen(false); }}
+                    className="w-full text-left px-5 py-3 text-[12px] hover:bg-gray-50 flex items-center gap-3 text-gray-600 transition-colors group"
+                  >
+                    <User size={14} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
+                    <span className="font-semibold">Security Settings</span>
+                  </button>
+                  <button 
+                    onClick={() => { setActiveTab('config'); setIsProfileOpen(false); }}
+                    className="w-full text-left px-5 py-3 text-[12px] hover:bg-gray-50 flex items-center gap-3 text-gray-600 transition-colors group"
+                  >
+                    <Settings size={14} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
+                    <span className="font-semibold">Workspace Config</span>
+                  </button>
+                  <div className="my-1 border-t border-gray-100" />
+                  <button 
+                    onClick={() => { onLogout(); setIsProfileOpen(false); }}
+                    className="w-full text-left px-5 py-3 text-[12px] text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors group"
+                  >
+                    <LogOut size={14} className="text-red-400 group-hover:scale-110 transition-transform" />
+                    <span className="font-black uppercase tracking-[0.2em] text-[9px]">Terminated Session</span>
+                  </button>
+                </div>
               </div>
-              <div className="py-2">
-                <button className="w-full text-left px-5 py-3 text-[12px] hover:bg-gray-50 flex items-center gap-3 text-gray-600 transition-colors group">
-                  <User size={14} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
-                  <span className="font-semibold">Security Settings</span>
-                </button>
-                <button className="w-full text-left px-5 py-3 text-[12px] hover:bg-gray-50 flex items-center gap-3 text-gray-600 transition-colors group">
-                  <Settings size={14} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
-                  <span className="font-semibold">Workspace Config</span>
-                </button>
-                <div className="my-1 border-t border-gray-100" />
-                <button 
-                  onClick={onLogout}
-                  className="w-full text-left px-5 py-3 text-[12px] text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors group"
-                >
-                  <LogOut size={14} className="text-red-400 group-hover:scale-110 transition-transform" />
-                  <span className="font-black uppercase tracking-[0.2em] text-[9px]">Terminated Session</span>
-                </button>
-              </div>
-            </div>
+            </>
           )}
         </div>
       </nav>
@@ -226,10 +241,15 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
         .animate-drift { animation: drift linear infinite; }
         .animate-heartbeat { animation: heartbeat 3s ease-in-out infinite; }
         .animate-slide-right { animation: slide-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+        .animate-fade-in { animation: fade-in 0.2s cubic-bezier(0, 0, 0.2, 1) forwards; }
 
         @media (prefers-reduced-motion: reduce) {
           * {
