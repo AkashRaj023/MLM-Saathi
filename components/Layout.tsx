@@ -37,6 +37,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
     { id: 'ai', label: 'AI Actions' },
     { id: 'graph', label: 'Partner Map' },
     { id: 'compliance', label: 'Compliance' },
+    { id: 'integrations', label: 'Integrations' },
     { id: 'config', label: 'System Setup' },
   ];
 
@@ -154,34 +155,27 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
       <header className="h-[44px] bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0 z-40">
         {/* Module Title */}
         <div className="flex items-center gap-3 flex-1">
-          {activeTab !== 'hub' && (
-            <button 
-              onClick={() => setActiveTab('hub')}
-              className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-[#0A1628] transition-all mr-1"
-              title="Back to Dashboard"
-            >
-              <ArrowLeft size={18} />
-            </button>
-          )}
           <h1 className="text-[18px] font-bold text-[#0A1628] tracking-tight">{getActiveModuleLabel()}</h1>
           <div className="w-[1px] h-4 bg-gray-200" />
           <span className="text-[10px] font-black text-[#8B9BB4] uppercase tracking-[0.2em]">Live Session</span>
         </div>
         
         {/* Time filter pills */}
-        <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg border border-gray-200">
-          {['LIVE', '1H', '6H', '24H', 'MTD'].map((filter) => (
-            <button 
-              key={filter}
-              onClick={() => setTimeFilter(filter)}
-              className={`px-3 py-1 rounded-md text-[10px] font-black tracking-widest transition-all ${
-                timeFilter === filter ? 'bg-white text-[#0A1628] shadow-sm' : 'text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
+        {(activeTab === 'hub' || activeTab === 'config') && (
+          <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg border border-gray-200">
+            {['LIVE', '1H', '6H', '24H', 'MTD'].map((filter) => (
+              <button 
+                key={filter}
+                onClick={() => setTimeFilter(filter)}
+                className={`px-3 py-1 rounded-md text-[10px] font-black tracking-widest transition-all ${
+                  timeFilter === filter ? 'bg-white text-[#0A1628] shadow-sm' : 'text-gray-400 hover:text-gray-600'
+                }`}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Global Status Indicators */}
         <div className="flex-1 flex items-center justify-end gap-10">

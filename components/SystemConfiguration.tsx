@@ -35,6 +35,7 @@ const SystemConfiguration: React.FC = () => {
     { id: 5, label: 'Attribute', icon: <Target size={16} /> },
     { id: 6, label: 'Calculate', icon: <DollarSign size={16} /> },
     { id: 7, label: 'Output', icon: <Zap size={16} /> },
+    { id: 8, label: 'RBAC', icon: <Users size={16} /> },
   ];
 
   const handleSaveStage = (stageId: number) => {
@@ -86,6 +87,7 @@ const SystemConfiguration: React.FC = () => {
           {currentStage === 5 && <Stage5Attribute onSave={() => handleSaveStage(5)} />}
           {currentStage === 6 && <Stage6Calculate onSave={() => handleSaveStage(6)} />}
           {currentStage === 7 && <Stage7Output onSave={() => handleSaveStage(7)} />}
+          {currentStage === 8 && <Stage8RBAC onSave={() => handleSaveStage(8)} />}
         </div>
         
         <div className="mt-12 flex justify-between items-center pt-8 border-t border-[#F1F5F9]">
@@ -107,7 +109,7 @@ const SystemConfiguration: React.FC = () => {
             <button 
               onClick={() => {
                 handleSaveStage(currentStage);
-                if (currentStage < 7) setTimeout(() => setCurrentStage(prev => prev + 1), 600);
+                if (currentStage < 8) setTimeout(() => setCurrentStage(prev => prev + 1), 600);
               }}
               className="h-[44px] bg-[#0A1628] text-white px-8 rounded-lg text-[13px] font-bold flex items-center gap-2 hover:bg-[#1E293B] transition-all relative overflow-hidden"
             >
@@ -120,6 +122,62 @@ const SystemConfiguration: React.FC = () => {
     </div>
   );
 };
+
+const Stage8RBAC = ({ onSave }: { onSave: () => void }) => (
+  <div className="space-y-8 animate-fade-in">
+    <div className="flex justify-between items-start">
+      <StageHeader title="User Management & RBAC" desc="Granular access control and workspace invitation" />
+      <button className="h-[44px] px-6 bg-[#00B4D8] text-white rounded-xl text-[12px] font-bold flex items-center gap-2 hover:bg-[#0096b4] transition-all">
+        <Plus size={16} />
+        Invite User
+      </button>
+    </div>
+
+    <div className="space-y-4">
+       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Workspace Members</p>
+       <div className="grid grid-cols-1 gap-3">
+          {CONDUIT_USERS.map((user) => (
+            <div key={user.id} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:border-[#00B4D8]/30 transition-all group">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#0A1628] text-[#00B4D8] flex items-center justify-center font-black text-xs">
+                  {user.name.split(' ').map(n => n[0]).join('')}
+                </div>
+                <div>
+                   <p className="text-[14px] font-bold text-[#0A1628]">{user.name}</p>
+                   <p className="text-[11px] text-gray-400 font-medium">{user.email}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-8">
+                 <div className="text-right">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Role</p>
+                    <span className="px-2 py-0.5 bg-[#00B4D8]/10 text-[#00B4D8] rounded text-[10px] font-bold">{user.role}</span>
+                 </div>
+                 <div className="text-right">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Last Login</p>
+                    <p className="text-[11px] font-bold text-[#0A1628]">2h ago</p>
+                 </div>
+                 <button className="p-2 text-gray-300 hover:text-red-500 transition-colors">
+                    <Trash2 size={16} />
+                 </button>
+              </div>
+            </div>
+          ))}
+       </div>
+    </div>
+
+    <div className="p-6 bg-[#0A1628] rounded-2xl text-white">
+       <div className="flex items-center gap-3 mb-4">
+          <Lock size={18} className="text-[#00B4D8]" />
+          <span className="text-[14px] font-bold">RBAC Strict Mode</span>
+       </div>
+       <p className="text-[12px] text-gray-400 mb-6 leading-relaxed">When active, users can only access modules explicitly defined in their permission scope. All unauthorized module attempts are logged for RBI audit compliance.</p>
+       <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
+          <span className="text-[11px] font-bold uppercase tracking-widest">Enforce Permission Guards</span>
+          <Toggle active />
+       </div>
+    </div>
+  </div>
+);
 
 const Stage1Input = ({ onSave }: { onSave: () => void }) => (
   <div className="space-y-8">

@@ -6,7 +6,7 @@ interface LoginPageProps {
   onBack: () => void;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onBack }) => {
   const [email, setEmail] = React.useState('');
   const [accessKey, setAccessKey] = React.useState('');
 
@@ -35,8 +35,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
       {/* Task 4: Login Card */}
       <div className="w-[460px] bg-white border border-[#E8EFFE] rounded-[24px] shadow-[0_12px_48px_rgba(31,41,55,0.08)] p-[52px_48px] relative z-10 animate-reveal">
+        {/* Back Button */}
+        <button 
+          onClick={onBack}
+          className="absolute top-8 left-8 flex items-center gap-2 text-[12px] font-bold text-[#8B9BB4] hover:text-[#0A1628] transition-all group"
+        >
+          <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
+          BACK TO HOME
+        </button>
+
         {/* Editorial Branding */}
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex items-center gap-3 mb-8 mt-4">
            <div className="w-9 h-9 bg-[#0A1628] rounded-lg flex items-center justify-center text-[#00B4D8]">
               <Shield size={20} />
            </div>
@@ -83,22 +92,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
           </button>
         </form>
-
-        <div className="relative my-8">
-           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#F3F4F6]"></div></div>
-           <div className="relative flex justify-center text-[11px] uppercase tracking-widest font-black text-[#9CA3AF]"><span className="bg-white px-2">OR CONTINUE WITH</span></div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-           <button className="h-12 border border-[#E5E7EB] rounded-[10px] flex items-center justify-center gap-2 text-[14px] font-bold text-[#0A1628] hover:bg-gray-50 transition-all">
-              <img src="https://www.google.com/favicon.ico" className="w-4 h-4 opacity-70" alt="Google" />
-              Google
-           </button>
-           <button className="h-12 border border-[#E5E7EB] rounded-[10px] flex items-center justify-center gap-2 text-[14px] font-bold text-[#0A1628] hover:bg-gray-50 transition-all">
-              <svg className="w-4 h-4 opacity-70" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.04 1.72-3.12 1.72-1.07 0-1.42-.66-2.67-.66-1.25 0-1.66.65-2.67.65-1.02 0-2.18-.84-3.19-1.83-2.11-2.08-3.7-5.88-3.7-9.33 0-3.41 1.77-5.41 3.52-5.41.87 0 1.63.53 2.15.53.53 0 1.39-.62 2.41-.62 1.07 0 2.03.54 2.68 1.34-2.61 1.44-2.2 4.96.44 6.13-.93 2.21-2.19 4.54-3.12 5.48zM12.03 5.07c.02-2.13 1.76-3.85 3.86-4.07.24 2.51-1.88 4.49-3.86 4.07z"/></svg>
-              Apple ID
-           </button>
-        </div>
 
         <div className="mt-8 text-center">
            <button className="text-[13px] font-medium text-[#00B4D8] hover:text-[#0096b4]">Request demo access &rarr;</button>

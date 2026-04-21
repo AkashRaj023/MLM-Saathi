@@ -10,6 +10,7 @@ import AIResolutionEngine from './components/AIResolutionEngine.tsx';
 import PartnerNetworkGraph from './components/PartnerNetworkGraph.tsx';
 import ComplianceMonitor from './components/ComplianceMonitor.tsx';
 import SystemConfiguration from './components/SystemConfiguration.tsx';
+import Integrations from './components/Integrations.tsx';
 import { ConduitUser, UserRole } from './types.ts';
 import { CONDUIT_USERS } from './constants.tsx';
 
@@ -51,6 +52,7 @@ const App: React.FC = () => {
       case 'graph': return <PartnerNetworkGraph />;
       case 'compliance': return <ComplianceMonitor />;
       case 'config': return <SystemConfiguration />;
+      case 'integrations': return <Integrations />;
       default: return <ObservabilityHub />;
     }
   };

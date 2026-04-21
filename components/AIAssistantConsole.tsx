@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles, AlertCircle, CheckCircle2, Zap, Terminal } from 'lucide-react';
+import { Send, Bot, User, Sparkles, AlertCircle, CheckCircle2, Zap, Terminal, Image, Paperclip } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -77,12 +77,14 @@ const AIAssistantConsole: React.FC = () => {
             key={msg.id}
             className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
           >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-              msg.role === 'assistant' ? 'bg-[#00B4D8] text-white' : 'bg-[#0A1628] text-white'
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${
+              msg.role === 'assistant' 
+                ? 'bg-gradient-to-br from-[#00B4D8] to-[#0077B6] text-white glossy-emoji' 
+                : 'bg-[#0A1628] text-white shadow-[#0A1628]/10'
             }`}>
-              {msg.role === 'assistant' ? <Bot size={18} /> : <User size={18} />}
+              {msg.role === 'assistant' ? <Bot size={22} className="animate-pulse" /> : <User size={20} />}
             </div>
-            <div className={`max-w-[80%] p-4 rounded-xl text-[14px] font-medium leading-relaxed shadow-sm ${
+            <div className={`max-w-[80%] p-4 rounded-2xl text-[14px] font-medium leading-relaxed shadow-sm ${
               msg.role === 'assistant' 
                 ? 'bg-white border border-[#E2E8F0] text-[#0A1628]' 
                 : 'bg-[#0A1628] text-white'
@@ -93,8 +95,8 @@ const AIAssistantConsole: React.FC = () => {
         ))}
         {isTyping && (
           <div className="flex gap-4">
-            <div className="w-8 h-8 rounded-lg bg-[#00B4D8] text-white flex items-center justify-center shrink-0">
-              <Bot size={18} />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00B4D8] to-[#0077B6] text-white flex items-center justify-center shrink-0 glossy-emoji shadow-lg">
+              <Bot size={22} className="animate-pulse" />
             </div>
             <div className="bg-white border border-[#E2E8F0] shadow-sm p-4 rounded-xl flex gap-1">
               <div className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" />
@@ -107,20 +109,28 @@ const AIAssistantConsole: React.FC = () => {
 
       {/* Input Area */}
       <div className="p-6 bg-white border-t border-[#E2E8F0]">
+        <div className="flex items-center gap-2 mb-4">
+          <button className="p-2 text-gray-400 hover:text-[#00B4D8] transition-colors hover:bg-[#F0F9FF] rounded-lg" title="Upload Image">
+            <Image size={20} />
+          </button>
+          <button className="p-2 text-gray-400 hover:text-[#00B4D8] transition-colors hover:bg-[#F0F9FF] rounded-lg" title="Upload File">
+            <Paperclip size={20} />
+          </button>
+        </div>
         <form onSubmit={handleSend} className="relative flex gap-3">
           <input 
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask anything..."
-            className="flex-1 h-[48px] bg-white border border-[#E2E8F0] rounded-[8px] px-4 text-[14px] text-[#0A1628] outline-none focus:border-[#00B4D8] transition-all placeholder:text-[#8B9BB4]"
+            placeholder="Ask anything about system health or diagnostics..."
+            className="flex-1 h-[52px] bg-[#F8FAFC] border border-[#E2E8F0] rounded-[12px] px-4 text-[14px] text-[#0A1628] outline-none focus:border-[#00B4D8] focus:ring-4 focus:ring-[#00B4D8]/5 transition-all placeholder:text-[#8B9BB4]"
           />
           <button 
             type="submit"
             disabled={!input.trim() || isTyping}
-            className="w-[48px] h-[48px] bg-[#0A1628] text-white rounded-[8px] flex items-center justify-center hover:bg-[#1E293B] transition-all disabled:opacity-50 shadow-lg shadow-[#0A1628]/10"
+            className="w-[52px] h-[52px] bg-[#0A1628] text-white rounded-[12px] flex items-center justify-center hover:bg-[#1E293B] transition-all disabled:opacity-50 shadow-lg shadow-[#0A1628]/10 group"
           >
-            <Send size={18} />
+            <Send size={20} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </button>
         </form>
         <div className="mt-4 flex flex-wrap gap-2">
@@ -129,6 +139,20 @@ const AIAssistantConsole: React.FC = () => {
           <QuickAction label="Trigger Remediation" onClick={() => setInput("Trigger remediation for Partner UPI Node")} />
         </div>
       </div>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .glossy-emoji {
+          background: linear-gradient(135deg, #00B4D8 0%, #0077B6 100%);
+          box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2), 0 8px 16px rgba(0,180,216,0.2);
+          position: relative;
+          overflow: hidden;
+        }
+        .glossy-emoji::after {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; height: 50%;
+          background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+        }
+      ` }} />
     </div>
   );
 };
