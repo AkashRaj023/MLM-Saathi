@@ -16,6 +16,17 @@ import { INCIDENTS } from '../constants.tsx';
 
 const IncidentCommandCenter: React.FC = () => {
   const [selectedIncident, setSelectedIncident] = React.useState<string | null>(null);
+  const [actionStatus, setActionStatus] = React.useState<{[key: string]: string}>({});
+
+  const handleAction = (incidentId: string, action: string) => {
+    setActionStatus(prev => ({ ...prev, [`${incidentId}-${action}`]: 'loading' }));
+    setTimeout(() => {
+      setActionStatus(prev => ({ ...prev, [`${incidentId}-${action}`]: 'success' }));
+      setTimeout(() => {
+        setActionStatus(prev => ({ ...prev, [`${incidentId}-${action}`]: '' }));
+      }, 2000);
+    }, 1500);
+  };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -37,61 +48,50 @@ const IncidentCommandCenter: React.FC = () => {
   const activeIncident = INCIDENTS.find(i => i.id === selectedIncident);
 
   return (
-    <div className="flex h-full gap-8 animate-fade-in">
+    <div className="flex h-full gap-6 animate-fade-in">
       {/* Incident List */}
-      <div className={`flex-1 space-y-6 ${selectedIncident ? 'hidden lg:block' : ''}`}>
-        <div className="flex justify-between items-end mb-8">
-          <div>
-            <h2 className="text-2xl font-black text-[#0A1628] uppercase tracking-tighter">Incident Control</h2>
-            <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest font-bold">Real-time Execution & Resolution Layer</p>
-          </div>
-          <div className="flex gap-2">
-            <span className="px-3 py-1 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black uppercase tracking-widest border border-red-500/20">2 Critical</span>
-            <span className="px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-500/20">5 Active</span>
-          </div>
-        </div>
-
-        <div className="space-y-3">
+      <div className={`flex-1 space-y-4 ${selectedIncident ? 'hidden lg:block' : ''}`}>
+        <div className="space-y-2">
           {INCIDENTS.map((incident) => (
             <div 
               key={incident.id}
               onClick={() => setSelectedIncident(incident.id)}
-              className={`bg-white rounded-2xl border-2 p-5 transition-all cursor-pointer hover:border-[#00B4D8]/50 ${
-                selectedIncident === incident.id ? 'border-[#00B4D8]' : 'border-gray-100'
+              className={`bg-white rounded-[8px] border p-4 transition-all cursor-pointer hover:border-[#00B4D8]/50 ${
+                selectedIncident === incident.id ? 'border-[#00B4D8]' : 'border-[#E2E8F0]'
               }`}
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${getSeverityColor(incident.severity)}`}>
+                  <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-widest ${getSeverityColor(incident.severity)}`}>
                     {incident.severity}
                   </span>
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{incident.id}</span>
+                  <span className="text-[11px] font-medium text-[#8B9BB4] uppercase tracking-widest">{incident.id}</span>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                <div className="flex items-center gap-2 text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">
                   {getStatusIcon(incident.status)}
                   <span>{incident.status.replace('_', ' ')}</span>
                 </div>
               </div>
 
-              <h3 className="text-lg font-black text-[#0A1628] mb-1">{incident.partnerName}</h3>
-              <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-4">{incident.type.replace('_', ' ')}</p>
+              <h3 className="text-[16px] font-bold text-[#0A1628] leading-tight mb-1">{incident.partnerName}</h3>
+              <p className="text-[11px] text-[#8B9BB4] font-medium uppercase tracking-widest mb-4">{incident.type.replace('_', ' ')}</p>
 
-              <div className="flex justify-between items-center pt-4 border-t border-gray-50">
+              <div className="flex justify-between items-center pt-4 border-t border-[#F1F5F9]">
                 <div className="flex gap-6">
                   <div>
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">AUM at Risk</p>
-                    <p className="text-sm font-black text-red-500">₹ {incident.aumAtRisk} Cr</p>
+                    <p className="text-[10px] font-bold text-[#8B9BB4] uppercase tracking-widest">Revenue at Risk</p>
+                    <p className="text-[14px] font-bold text-red-500">₹ {incident.aumAtRisk} Cr</p>
                   </div>
                   <div>
-                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">MTTR</p>
-                    <p className="text-sm font-black text-[#0A1628]">{incident.mttr}</p>
+                    <p className="text-[10px] font-bold text-[#8B9BB4] uppercase tracking-widest">MTTR</p>
+                    <p className="text-[14px] font-bold text-[#0A1628]">{incident.mttr}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-[8px] font-black uppercase">
+                  <div className="w-6 h-6 rounded-full bg-[#F1F5F9] border border-[#E2E8F0] flex items-center justify-center text-[10px] font-bold text-[#0A1628]">
                     {incident.owner.split(' ').map(n => n[0]).join('')}
                   </div>
-                  <span className="text-[10px] font-bold text-gray-600">{incident.owner}</span>
+                  <span className="text-[12px] font-medium text-[#0A1628]">{incident.owner}</span>
                 </div>
               </div>
             </div>
@@ -99,45 +99,66 @@ const IncidentCommandCenter: React.FC = () => {
         </div>
       </div>
 
-      {/* Incident Detail View */}
+      {/* Incident Detail View: Fix 2 set to 380px */}
       {selectedIncident && activeIncident ? (
-        <div className="w-full lg:w-[500px] bg-white rounded-[32px] border border-gray-200 flex flex-col shadow-xl animate-slide-in">
-          <div className="p-8 border-b border-gray-100 flex justify-between items-start">
+        <div className="w-[380px] bg-white border-l border-[#E2E8F0] flex flex-col animate-slide-in relative">
+          <div className="p-6 border-b border-[#E2E8F0] flex justify-between items-start">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${getSeverityColor(activeIncident.severity)}`}>
+                <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-widest ${getSeverityColor(activeIncident.severity)}`}>
                   {activeIncident.severity}
                 </span>
-                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{activeIncident.id}</span>
+                <span className="text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">{activeIncident.id}</span>
               </div>
-              <h3 className="text-xl font-black text-[#0A1628]">{activeIncident.partnerName}</h3>
+              <h3 className="text-[20px] font-bold text-[#0A1628] tracking-tight">{activeIncident.partnerName}</h3>
             </div>
             <button 
               onClick={() => setSelectedIncident(null)}
-              className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              className="p-1 hover:bg-[#F1F5F9] rounded-md transition-colors"
             >
-              <ArrowRight size={20} className="text-gray-400" />
+              <ArrowRight size={20} className="text-[#8B9BB4]" />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-8 space-y-8">
+          <div className="flex-1 overflow-y-auto p-6 space-y-8">
             {/* Action Panel */}
-            <div className="grid grid-cols-2 gap-3">
-              <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-[#00B4D8] text-white hover:opacity-90 transition-all">
-                <Zap size={20} />
-                <span className="text-[9px] font-black uppercase tracking-widest">AI Auto-Fix</span>
+            <div className="grid grid-cols-2 gap-2">
+              <button 
+                onClick={() => handleAction(activeIncident.id, 'autofix')}
+                disabled={actionStatus[`${activeIncident.id}-autofix`] === 'loading'}
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-lg bg-[#00B4D8] text-white hover:opacity-90 transition-all disabled:opacity-50"
+              >
+                {actionStatus[`${activeIncident.id}-autofix`] === 'loading' ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <Zap size={18} />}
+                <span className="text-[11px] font-bold uppercase tracking-widest">
+                  {actionStatus[`${activeIncident.id}-autofix`] === 'success' ? 'Success' : 'AI Auto-Fix'}
+                </span>
               </button>
-              <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl bg-[#0A1628] text-white hover:opacity-90 transition-all">
-                <MessageSquare size={20} />
-                <span className="text-[9px] font-black uppercase tracking-widest">Escalate</span>
+              <button 
+                onClick={() => handleAction(activeIncident.id, 'escalate')}
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-lg bg-[#0A1628] text-white hover:opacity-90 transition-all"
+              >
+                {actionStatus[`${activeIncident.id}-escalate`] === 'loading' ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> : <MessageSquare size={18} />}
+                <span className="text-[11px] font-bold uppercase tracking-widest">
+                  {actionStatus[`${activeIncident.id}-escalate`] === 'success' ? 'Escalated' : 'Escalate'}
+                </span>
               </button>
-              <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all">
-                <Gavel size={20} />
-                <span className="text-[9px] font-black uppercase tracking-widest">Enforce SLA</span>
+              <button 
+                onClick={() => handleAction(activeIncident.id, 'sla')}
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-lg border border-[#E2E8F0] text-[#0A1628] hover:bg-[#F8FAFC] transition-all"
+              >
+                {actionStatus[`${activeIncident.id}-sla`] === 'loading' ? <div className="w-5 h-5 border-2 border-[#00B4D8]/20 border-t-[#00B4D8] rounded-full animate-spin" /> : <Gavel size={18} />}
+                <span className="text-[11px] font-bold uppercase tracking-widest">
+                   {actionStatus[`${activeIncident.id}-sla`] === 'success' ? 'Enforced' : 'Enforce SLA'}
+                </span>
               </button>
-              <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-all">
-                <CheckCircle2 size={20} />
-                <span className="text-[9px] font-black uppercase tracking-widest">Resolve</span>
+              <button 
+                onClick={() => handleAction(activeIncident.id, 'resolve')}
+                className="flex flex-col items-center justify-center gap-2 p-4 rounded-lg border border-[#E2E8F0] text-[#0A1628] hover:bg-[#F8FAFC] transition-all"
+              >
+                {actionStatus[`${activeIncident.id}-resolve`] === 'loading' ? <div className="w-5 h-5 border-2 border-[#00B4D8]/20 border-t-[#00B4D8] rounded-full animate-spin" /> : <CheckCircle2 size={18} />}
+                <span className="text-[11px] font-bold uppercase tracking-widest">
+                  {actionStatus[`${activeIncident.id}-resolve`] === 'success' ? 'Resolved' : 'Resolve'}
+                </span>
               </button>
             </div>
 

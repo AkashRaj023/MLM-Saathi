@@ -41,15 +41,16 @@ const ObservabilityHub: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Headline Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="space-y-6 animate-fade-in pb-10">
+      {/* Headline Metrics: Fix 2 - 140px height, repeat(4, 1fr), 16px gap */}
+      <div className="grid grid-cols-4 gap-4">
         <MetricCard 
           label="Total API Calls (1h)" 
           value="1.2M" 
           delta="+4.2%" 
           trend="up" 
           icon={<Activity size={20} />} 
+          variant="headline"
         />
         <MetricCard 
           label="Live Failure Rate" 
@@ -58,6 +59,7 @@ const ObservabilityHub: React.FC = () => {
           trend="down" 
           icon={<TrendingUp size={20} />} 
           status="healthy"
+          variant="headline"
         />
         <MetricCard 
           label="AUM at Risk" 
@@ -66,6 +68,7 @@ const ObservabilityHub: React.FC = () => {
           trend="up" 
           icon={<DollarSign size={20} />} 
           status="critical"
+          variant="headline"
         />
         <MetricCard 
           label="Active Incidents" 
@@ -74,25 +77,26 @@ const ObservabilityHub: React.FC = () => {
           trend="up" 
           icon={<AlertCircle size={20} />} 
           status="warning"
+          variant="headline"
         />
       </div>
 
-      {/* Node Grid */}
+      {/* Node Grid: Fix 2 - 160px height (standard metric card height), repeat(4, 1fr), 16px gap */}
       <div className="space-y-4">
         <div className="flex justify-between items-end">
-          <h3 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Ecosystem Node Grid</h3>
-          <span className="text-[10px] font-bold text-gray-400">Refreshed every 10s</span>
+          <h3 className="text-[13px] font-medium uppercase tracking-[0.08em] text-[#8B9BB4]">Ecosystem Node Grid</h3>
+          <span className="text-[10px] font-bold text-[#8B9BB4]">REFRESHED EVERY 10S</span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           {API_NODES.map((node) => (
             <div 
               key={node.id} 
-              className={`p-5 rounded-2xl border-2 transition-all cursor-pointer hover:scale-[1.02] ${getStatusColor(node.status)}`}
+              className={`h-[160px] p-5 rounded-lg border transition-all cursor-pointer hover:border-[#00B4D8] flex flex-col justify-between bg-white ${getStatusColor(node.status)} shadow-sm`}
             >
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">{node.type}</p>
-                  <h4 className="text-sm font-black">{node.name}</h4>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-[#8B9BB4] mb-0.5">{node.type}</p>
+                  <h4 className="text-[14px] font-medium text-[#0A1628] truncate max-w-[120px]">{node.name}</h4>
                 </div>
                 <div className={`w-2 h-2 rounded-full ${
                   node.status === 'HEALTHY' ? 'bg-green-500' : 
@@ -100,29 +104,31 @@ const ObservabilityHub: React.FC = () => {
                 }`} />
               </div>
               
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase">Latency</p>
-                  <p className="text-lg font-black font-mono">{node.latency}ms</p>
+              <div className="flex items-end justify-between">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[9px] font-bold text-[#8B9BB4] uppercase mb-0.5 tracking-tighter">Latency</p>
+                    <p className="text-[16px] font-medium text-[#0A1628] leading-none">{node.latency}ms</p>
+                  </div>
+                  <div>
+                    <p className="text-[9px] font-bold text-[#8B9BB4] uppercase mb-0.5 tracking-tighter">Success</p>
+                    <p className="text-[16px] font-medium text-[#0A1628] leading-none">{node.successRate}%</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] font-bold text-gray-400 uppercase">Success</p>
-                  <p className="text-lg font-black font-mono">{node.successRate}%</p>
-                </div>
-              </div>
 
-              <div className="h-10 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={node.latencyTrend.map((v, i) => ({ v, i }))}>
-                    <Area 
-                      type="monotone" 
-                      dataKey="v" 
-                      stroke={node.status === 'HEALTHY' ? '#22C55E' : node.status === 'WARNING' ? '#F59E0B' : '#EF4444'} 
-                      fill={node.status === 'HEALTHY' ? '#22C55E20' : node.status === 'WARNING' ? '#F59E0B20' : '#EF444420'} 
-                      strokeWidth={2}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <div className="h-8 w-20 shrink-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={node.latencyTrend.map((v, i) => ({ v, i }))}>
+                      <Area 
+                        type="monotone" 
+                        dataKey="v" 
+                        stroke={node.status === 'HEALTHY' ? '#22C55E' : node.status === 'WARNING' ? '#F59E0B' : '#EF4444'} 
+                        fill={node.status === 'HEALTHY' ? '#22C55E20' : node.status === 'WARNING' ? '#F59E0B20' : '#EF444420'} 
+                        strokeWidth={1.5}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
           ))}
@@ -130,19 +136,19 @@ const ObservabilityHub: React.FC = () => {
       </div>
 
       {/* Main Chart */}
-      <div className="bg-white rounded-3xl border border-gray-200 p-8">
+      <div className="bg-white rounded-xl border border-[#E2E8F0] p-6 shadow-sm">
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h3 className="text-lg font-black uppercase tracking-tight">Ecosystem Performance Trend</h3>
-            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">Last 24 Hours Distributed Trace Analysis</p>
+            <h3 className="text-[18px] font-bold text-[#0A1628] tracking-tight">Ecosystem Performance Trend</h3>
+            <p className="text-[11px] text-[#8B9BB4] font-bold uppercase tracking-widest mt-1">Distributed Trace Analysis (24H)</p>
           </div>
-          <div className="flex bg-gray-100 p-1 rounded-xl">
+          <div className="flex bg-[#F1F5F9] p-1 rounded-lg">
             {(['latency', 'error', 'throughput'] as const).map((v) => (
               <button
                 key={v}
                 onClick={() => setView(v)}
-                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                  view === v ? 'bg-white text-[#0A1628] shadow-sm' : 'text-gray-400 hover:text-gray-600'
+                className={`px-4 py-1.5 rounded-md text-[11px] font-bold uppercase tracking-widest transition-all ${
+                  view === v ? 'bg-white text-[#0A1628] shadow-sm' : 'text-[#8B9BB4] hover:text-[#0A1628]'
                 }`}
               >
                 {v}
@@ -151,7 +157,7 @@ const ObservabilityHub: React.FC = () => {
           </div>
         </div>
 
-        <div className="h-[400px] w-full">
+        <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={timeSeriesData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
@@ -194,9 +200,10 @@ interface MetricCardProps {
   trend: 'up' | 'down';
   icon: React.ReactNode;
   status?: 'healthy' | 'warning' | 'critical';
+  variant?: 'standard' | 'headline';
 }
 
-const MetricCard: React.FC<MetricCardProps> = ({ label, value, delta, trend, icon, status }) => {
+const MetricCard: React.FC<MetricCardProps> = ({ label, value, delta, trend, icon, status, variant = 'standard' }) => {
   const getStatusColor = () => {
     switch (status) {
       case 'healthy': return 'text-green-500';
@@ -206,10 +213,12 @@ const MetricCard: React.FC<MetricCardProps> = ({ label, value, delta, trend, ico
     }
   };
 
+  const isHeadline = variant === 'headline';
+
   return (
-    <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`p-2 rounded-xl bg-gray-50 ${getStatusColor()}`}>
+    <div className={`${isHeadline ? 'h-[140px]' : 'h-[160px]'} bg-white rounded-lg border border-[#E2E8F0] p-5 shadow-sm overflow-hidden flex flex-col justify-between`}>
+      <div className="flex justify-between items-start">
+        <div className={`p-2 rounded-lg bg-[#F8FAFC] ${getStatusColor()}`}>
           {icon}
         </div>
         <div className={`flex items-center gap-1 text-[10px] font-black ${trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
@@ -217,8 +226,10 @@ const MetricCard: React.FC<MetricCardProps> = ({ label, value, delta, trend, ico
           <span>{delta}</span>
         </div>
       </div>
-      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{label}</p>
-      <p className="text-2xl font-black tracking-tight">{value}</p>
+      <div>
+        <p className="text-[12px] font-medium text-[#8B9BB4] uppercase tracking-tight mb-1">{label}</p>
+        <p className={`${isHeadline ? 'text-[28px]' : 'text-[22px]'} font-medium text-[#0A1628] leading-none`}>{value}</p>
+      </div>
     </div>
   );
 };

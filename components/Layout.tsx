@@ -8,11 +8,12 @@ import {
   Network, 
   FileCheck, 
   Settings, 
-  AlertCircle,
-  Menu,
-  X,
   LogOut,
-  MessageSquare
+  MessageSquare,
+  CircuitBoard,
+  User,
+  ArrowLeft,
+  Activity as PulseIcon
 } from 'lucide-react';
 import { ENTERPRISE_CLIENT } from '../constants.tsx';
 
@@ -24,135 +25,225 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLogout }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+  const [timeFilter, setTimeFilter] = React.useState('LIVE');
 
   const navItems = [
-    { id: 'hub', label: 'API Health', icon: <Activity size={18} /> },
-    { id: 'scorecard', label: 'SLA Performance', icon: <BarChart3 size={18} /> },
-    { id: 'shield', label: 'Revenue Impact', icon: <Shield size={18} /> },
-    { id: 'incidents', label: 'Incident Control', icon: <Zap size={18} /> },
-    { id: 'assistant', label: 'AI Assistant Console', icon: <MessageSquare size={18} /> },
-    { id: 'ai', label: 'AI Actions', icon: <Brain size={18} /> },
-    { id: 'graph', label: 'Partner Map', icon: <Network size={18} /> },
-    { id: 'compliance', label: 'Compliance Alerts', icon: <FileCheck size={18} /> },
-    { id: 'config', label: 'System Setup', icon: <Settings size={18} /> },
+    { id: 'hub', label: 'API Health' },
+    { id: 'scorecard', label: 'SLA Performance' },
+    { id: 'shield', label: 'Revenue Impact' },
+    { id: 'incidents', label: 'Incident Control' },
+    { id: 'assistant', label: 'AI Assistant' },
+    { id: 'ai', label: 'AI Actions' },
+    { id: 'graph', label: 'Partner Map' },
+    { id: 'compliance', label: 'Compliance' },
+    { id: 'config', label: 'System Setup' },
   ];
 
-  const getHealthColor = (score: number) => {
-    if (score > 85) return 'text-green-500 bg-green-500/10 border-green-500/20';
-    if (score > 60) return 'text-amber-500 bg-amber-500/10 border-amber-500/20';
-    return 'text-red-500 bg-red-500/10 border-red-500/20';
+  const getActiveModuleLabel = () => {
+    const active = navItems.find(item => item.id === activeTab);
+    return active ? active.label : 'Dashboard';
   };
 
   return (
-    <div className="flex h-screen bg-[#F4F6FA] font-sans text-[#0A1628]">
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#0A1628] text-white transform transition-transform duration-300 lg:relative lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="flex flex-col h-full">
-          <div className="p-6 flex items-center gap-3 border-b border-white/5">
-            <span className="text-xl font-black tracking-tighter uppercase">Conduit</span>
+    <div className="flex flex-col h-screen bg-[#F0F4F8] font-sans text-[#0A1628] overflow-hidden">
+      {/* Task 2: Horizontal Top Navigation Bar (52px) */}
+      <nav className="h-[52px] w-full bg-[#0A1628] relative overflow-hidden flex items-center px-6 shrink-0 z-[60]">
+        {/* Animated Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0A1628] via-[#0D1F3C] to-[#0A1628] pointer-events-none" />
+        
+        {/* Particle Effect: Tiny dots drifting */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[...Array(6)].map((_, i) => (
+            <div 
+              key={i}
+              className="absolute w-[3px] h-[3px] rounded-full bg-[#00B4D8]/15 animate-drift"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                animationDuration: `${15 + Math.random() * 20}s`,
+                animationDelay: `-${Math.random() * 20}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Shimmering Bottom Border */}
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#00B4D8]/40 to-transparent pointer-events-none shadow-[0_0_8px_rgba(0,180,216,0.3)]" />
+
+        {/* Logo with Heartbeat Pulse */}
+        <div className="flex items-center gap-4 shrink-0 relative z-10 transition-all">
+          <div className="text-[#00B4D8] animate-heartbeat">
+            <CircuitBoard size={32} />
+          </div>
+          <div className="w-[0.5px] h-6 bg-white/10" />
+        </div>
+
+        {/* Navigation Labels */}
+        <div className="flex-1 flex justify-evenly items-center px-8 h-full relative z-10">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`h-full flex items-center px-2 relative transition-all text-[13px] font-medium tracking-tight group ${
+                activeTab === item.id ? 'text-[#00B4D8]' : 'text-[#8B9BB4] hover:text-white'
+              }`}
+              style={{
+                textShadow: activeTab === item.id ? '0 0 12px rgba(0,180,216,0.4)' : undefined
+              }}
+            >
+              <span className={`transition-all duration-300 ${activeTab !== item.id ? 'group-hover:[text-shadow:0_0_12px_rgba(0,180,216,0.6)]' : ''}`}>
+                {item.label}
+              </span>
+              {activeTab === item.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#00B4D8] animate-slide-right" />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* System Admin Avatar with Rotating Ring */}
+        <div className="relative shrink-0 ml-4 z-10">
+          <div className="absolute inset-[-4px] rounded-full border border-dashed border-[#00B4D8]/30 animate-spin-slow pointer-events-none" />
+          <button 
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-black text-white hover:bg-white/20 transition-all border border-white/10 relative z-10"
+          >
+            SA
+          </button>
+          
+          {isProfileOpen && (
+            <div className="absolute right-0 mt-3 w-[240px] bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden z-[70] animate-fade-in origin-top-right">
+              <div className="p-5 border-b border-gray-100 bg-gray-50/50">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-full bg-[#00B4D8] text-white flex items-center justify-center font-black text-xs">SA</div>
+                  <div>
+                    <p className="text-[12px] font-black text-[#0A1628] leading-tight uppercase tracking-wider">System Admin</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                       <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                       <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Now</span>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-[10px] text-gray-400 font-medium px-1">admin@conduit.inc</p>
+              </div>
+              <div className="py-2">
+                <button className="w-full text-left px-5 py-3 text-[12px] hover:bg-gray-50 flex items-center gap-3 text-gray-600 transition-colors group">
+                  <User size={14} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
+                  <span className="font-semibold">Security Settings</span>
+                </button>
+                <button className="w-full text-left px-5 py-3 text-[12px] hover:bg-gray-50 flex items-center gap-3 text-gray-600 transition-colors group">
+                  <Settings size={14} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
+                  <span className="font-semibold">Workspace Config</span>
+                </button>
+                <div className="my-1 border-t border-gray-100" />
+                <button 
+                  onClick={onLogout}
+                  className="w-full text-left px-5 py-3 text-[12px] text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors group"
+                >
+                  <LogOut size={14} className="text-red-400 group-hover:scale-110 transition-transform" />
+                  <span className="font-black uppercase tracking-[0.2em] text-[9px]">Terminated Session</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Task 1: Contextual Sub-bar (44px) - Titles removed from pages, handled here */}
+      <header className="h-[44px] bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0 z-40">
+        {/* Module Title */}
+        <div className="flex items-center gap-3 flex-1">
+          {activeTab !== 'hub' && (
+            <button 
+              onClick={() => setActiveTab('hub')}
+              className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-[#0A1628] transition-all mr-1"
+              title="Back to Dashboard"
+            >
+              <ArrowLeft size={18} />
+            </button>
+          )}
+          <h1 className="text-[18px] font-bold text-[#0A1628] tracking-tight">{getActiveModuleLabel()}</h1>
+          <div className="w-[1px] h-4 bg-gray-200" />
+          <span className="text-[10px] font-black text-[#8B9BB4] uppercase tracking-[0.2em]">Live Session</span>
+        </div>
+        
+        {/* Time filter pills */}
+        <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg border border-gray-200">
+          {['LIVE', '1H', '6H', '24H', 'MTD'].map((filter) => (
+            <button 
+              key={filter}
+              onClick={() => setTimeFilter(filter)}
+              className={`px-3 py-1 rounded-md text-[10px] font-black tracking-widest transition-all ${
+                timeFilter === filter ? 'bg-white text-[#0A1628] shadow-sm' : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        {/* Global Status Indicators */}
+        <div className="flex-1 flex items-center justify-end gap-10">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Health Score</span>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-green-500/10 border border-green-500/20 shadow-[0_0_10px_rgba(34,197,94,0.1)]">
+              <PulseIcon size={12} className="text-green-600 animate-pulse" />
+              <span className="text-[12px] font-bold text-green-600">{ENTERPRISE_CLIENT.healthScore}%</span>
+            </div>
           </div>
 
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setIsMobileMenuOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === item.id 
-                    ? 'bg-[#00B4D8]/10 text-[#00B4D8] border border-[#00B4D8]/20' 
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">AUM at Risk</span>
+            <span className="text-[14px] font-black text-red-500 tabular-nums">₹ {ENTERPRISE_CLIENT.aumAtRisk} Cr</span>
+          </div>
 
-          <div className="p-6 border-t border-white/5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold">
-                SA
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold truncate">System Admin</p>
-                <p className="text-[10px] text-white/40 uppercase tracking-widest font-black">CTO</p>
-              </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Active Incidents</span>
+            <div className="w-6 h-6 flex items-center justify-center rounded-full bg-amber-500 text-white text-[12px] font-black shadow-[0_0_12px_rgba(245,158,11,0.3)]">
+              {ENTERPRISE_CLIENT.activeIncidents}
             </div>
           </div>
         </div>
-      </aside>
+      </header>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
-          <div className="flex items-center gap-4">
-            <button 
-              className="lg:hidden p-2 -ml-2 text-gray-600"
-              onClick={() => setIsMobileMenuOpen(true)}
-            >
-              <Menu size={24} />
-            </button>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-black uppercase tracking-widest text-gray-400">Client:</span>
-              <span className="text-sm font-bold">{ENTERPRISE_CLIENT.name}</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold ${getHealthColor(ENTERPRISE_CLIENT.healthScore)}`}>
-              <Activity size={14} />
-              <span>Health: {ENTERPRISE_CLIENT.healthScore}</span>
-            </div>
-
-            <div className="hidden md:flex flex-col items-end">
-              <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">AUM at Risk</span>
-              <span className="text-sm font-black text-red-500">₹ {ENTERPRISE_CLIENT.aumAtRisk} Cr</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <div className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-                  <AlertCircle size={20} />
-                  {ENTERPRISE_CLIENT.criticalIncidents > 0 && (
-                    <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                      {ENTERPRISE_CLIENT.criticalIncidents}
-                    </span>
-                  )}
-                </div>
-              </div>
-              
-              <div className="h-8 w-px bg-gray-200 mx-2" />
-              
-              <button 
-                onClick={onLogout}
-                className="flex items-center gap-2 px-3 py-2 text-gray-400 hover:text-red-500 transition-colors text-xs font-black uppercase tracking-widest"
-              >
-                <LogOut size={16} />
-                <span className="hidden sm:inline">Logout</span>
-              </button>
-            </div>
-          </div>
-        </header>
-
-        {/* Content Area */}
-        <main className="flex-1 overflow-y-auto p-8">
+      {/* Content Area with Accessibility Support */}
+      <main className="flex-1 overflow-y-auto bg-[#F8FAFC]">
+        <div className="p-6 h-full transition-all duration-500">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
 
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes drift {
+          from { transform: translateX(-100px); opacity: 0; }
+          50% { opacity: 1; }
+          to { transform: translateX(100vw); opacity: 0; }
+        }
+        @keyframes heartbeat {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
+        }
+        @keyframes slide-right {
+          from { width: 0; left: 50%; opacity: 0; }
+          to { width: 100%; left: 0; opacity: 1; }
+        }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-drift { animation: drift linear infinite; }
+        .animate-heartbeat { animation: heartbeat 3s ease-in-out infinite; }
+        .animate-slide-right { animation: slide-right 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation: none !important;
+            transition: none !important;
+          }
+        }
+      `}} />
     </div>
   );
 };

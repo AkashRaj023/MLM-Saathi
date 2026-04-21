@@ -6,7 +6,7 @@ interface LoginPageProps {
   onBack: () => void;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onBack }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [email, setEmail] = React.useState('');
   const [accessKey, setAccessKey] = React.useState('');
 
@@ -16,68 +16,114 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin, onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F6FA] flex items-center justify-center p-6 font-sans">
-      <div className="w-full max-w-md bg-white rounded-[40px] p-12 shadow-2xl shadow-gray-200 border border-gray-100 relative">
-        <button 
-          onClick={onBack}
-          className="absolute top-8 left-8 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-[#0A1628] transition-colors"
-        >
-          <ArrowLeft size={14} />
-          Back to Home
-        </button>
+    <div className="relative min-h-screen bg-white flex items-center justify-center overflow-hidden font-sans">
+      {/* Task 4: Abstract Decorative Elements */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* Soft Blurry Blobs */}
+        <div className="absolute top-[10%] left-[5%] w-[400px] h-[400px] bg-[#00B4D8] rounded-full blur-[60px] opacity-[0.05]" />
+        <div className="absolute bottom-[10%] right-[10%] w-[280px] h-[280px] bg-[#3B82F6] rounded-full blur-[60px] opacity-[0.06]" />
+        <div className="absolute top-[40%] right-[5%] w-[200px] h-[200px] bg-[#6366F1] rounded-full blur-[60px] opacity-[0.04]" />
+        
+        {/* Decorative Arc Lines */}
+        <svg className="absolute top-0 right-0 opacity-[0.08] text-[#00B4D8]" width="300" height="300">
+          <path d="M 300 0 A 200 200 0 0 0 100 200" fill="none" stroke="currentColor" strokeWidth="1" />
+        </svg>
+        <svg className="absolute bottom-0 left-0 opacity-[0.08] text-[#00B4D8]" width="200" height="200">
+          <path d="M 0 200 A 140 140 0 0 1 140 60" fill="none" stroke="currentColor" strokeWidth="1" />
+        </svg>
+      </div>
 
-        <div className="text-center mb-12 pt-8">
-          <span className="text-2xl font-black tracking-tighter uppercase text-[#0A1628]">Conduit</span>
-          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-2">Enterprise Access Gateway</p>
+      {/* Task 4: Login Card */}
+      <div className="w-[460px] bg-white border border-[#E8EFFE] rounded-[24px] shadow-[0_12px_48px_rgba(31,41,55,0.08)] p-[52px_48px] relative z-10 animate-reveal">
+        {/* Editorial Branding */}
+        <div className="flex items-center gap-3 mb-8">
+           <div className="w-9 h-9 bg-[#0A1628] rounded-lg flex items-center justify-center text-[#00B4D8]">
+              <Shield size={20} />
+           </div>
+           <span className="text-[14px] font-black uppercase tracking-[0.25em] text-[#0A1628]">Conduit</span>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-              <Mail size={12} />
-              Email Address
-            </label>
+        <div className="mb-7">
+          <h1 className="text-[36px] font-bold text-[#0A1628] leading-tight tracking-[-0.01em]">Welcome back</h1>
+          <p className="text-[15px] text-[#6B7280] mt-1.5">Sign in to your Conduit workspace</p>
+        </div>
+
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div className="space-y-1.5">
             <input 
               type="email" 
-              required
+              placeholder="Work email"
               value={email}
+              required
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="demo@conduit.ac.in"
-              className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 text-sm font-bold text-[#0A1628] outline-none focus:border-[#00B4D8] transition-all"
+              className="w-full h-12 bg-white border-[1.5px] border-[#E5E7EB] rounded-[10px] px-4 text-[14px] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00B4D8] focus:ring-[3px] focus:ring-[#00B4D8]/12 transition-all font-medium text-[#0A1628]"
+            />
+          </div>
+          
+          <div className="space-y-1.5">
+            <input 
+              type="password" 
+              placeholder="Access key"
+              value={accessKey}
+              required
+              onChange={(e) => setAccessKey(e.target.value)}
+              className="w-full h-12 bg-white border-[1.5px] border-[#E5E7EB] rounded-[10px] px-4 text-[14px] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#00B4D8] focus:ring-[3px] focus:ring-[#00B4D8]/12 transition-all font-medium text-[#0A1628]"
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-              <Lock size={12} />
-              Access Key
-            </label>
-            <input 
-              type="password" 
-              required
-              value={accessKey}
-              onChange={(e) => setAccessKey(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 text-sm font-bold text-[#0A1628] outline-none focus:border-[#00B4D8] transition-all"
-            />
+          <div className="flex justify-end">
+             <button type="button" className="text-[12px] text-[#00B4D8] font-medium hover:underline">Forgot key?</button>
           </div>
 
           <button 
             type="submit"
-            className="w-full bg-[#0A1628] text-white py-5 rounded-2xl text-xs font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 hover:bg-gray-800 transition-all group shadow-xl shadow-[#0A1628]/10"
+            className="w-full h-[52px] bg-[#0A1628] hover:bg-[#00B4D8] rounded-[10px] text-[15px] font-medium text-white transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(0,0,0,0.1)] group"
           >
-            Authenticate
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            Sign In with Conduit
+            <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
           </button>
         </form>
 
-        <div className="mt-12 pt-8 border-t border-gray-100 flex items-center justify-center gap-6 text-gray-400">
-          <div className="flex items-center gap-2">
-            <Shield size={14} />
-            <span className="text-[9px] font-black uppercase tracking-widest">Secure Session</span>
-          </div>
+        <div className="relative my-8">
+           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#F3F4F6]"></div></div>
+           <div className="relative flex justify-center text-[11px] uppercase tracking-widest font-black text-[#9CA3AF]"><span className="bg-white px-2">OR CONTINUE WITH</span></div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+           <button className="h-12 border border-[#E5E7EB] rounded-[10px] flex items-center justify-center gap-2 text-[14px] font-bold text-[#0A1628] hover:bg-gray-50 transition-all">
+              <img src="https://www.google.com/favicon.ico" className="w-4 h-4 opacity-70" alt="Google" />
+              Google
+           </button>
+           <button className="h-12 border border-[#E5E7EB] rounded-[10px] flex items-center justify-center gap-2 text-[14px] font-bold text-[#0A1628] hover:bg-gray-50 transition-all">
+              <svg className="w-4 h-4 opacity-70" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.96.95-2.04 1.72-3.12 1.72-1.07 0-1.42-.66-2.67-.66-1.25 0-1.66.65-2.67.65-1.02 0-2.18-.84-3.19-1.83-2.11-2.08-3.7-5.88-3.7-9.33 0-3.41 1.77-5.41 3.52-5.41.87 0 1.63.53 2.15.53.53 0 1.39-.62 2.41-.62 1.07 0 2.03.54 2.68 1.34-2.61 1.44-2.2 4.96.44 6.13-.93 2.21-2.19 4.54-3.12 5.48zM12.03 5.07c.02-2.13 1.76-3.85 3.86-4.07.24 2.51-1.88 4.49-3.86 4.07z"/></svg>
+              Apple ID
+           </button>
+        </div>
+
+        <div className="mt-8 text-center">
+           <button className="text-[13px] font-medium text-[#00B4D8] hover:text-[#0096b4]">Request demo access &rarr;</button>
+        </div>
+
+        <div className="mt-12 pt-8 border-t border-[#F3F4F6] space-y-4 flex flex-col items-center">
+            <div className="flex gap-2">
+               <span className="bg-[#F0FDF4] border border-[#BBF7D0] px-2.5 py-1 rounded-full text-[11px] font-bold text-[#166534]">ISO 27001 Certified</span>
+               <span className="bg-[#F0FDF4] border border-[#BBF7D0] px-2.5 py-1 rounded-full text-[11px] font-bold text-[#166534]">SOC2 Type II</span>
+            </div>
+            <span className="bg-[#EFF6FF] border border-[#BFDBFE] px-2.5 py-1 rounded-full text-[11px] font-bold text-[#1E40AF]">RBI Compliant Infrastructure</span>
         </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes reveal {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-reveal { animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @media (prefers-reduced-motion: reduce) {
+          * { animation: none !important; transition: none !important; }
+        }
+      `}} />
     </div>
   );
 };

@@ -5,7 +5,10 @@ import {
   Eye, 
   TrendingUp,
   AlertTriangle,
-  CheckCircle2
+  CheckCircle2,
+  Shield,
+  Zap,
+  Activity
 } from 'lucide-react';
 import { SLA_ATTRIBUTIONS } from '../constants.tsx';
 
@@ -26,74 +29,52 @@ const SLAScorecard: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div className="flex justify-between items-end">
-        <div>
-          <h2 className="text-2xl font-black text-[#0A1628] uppercase tracking-tighter">SLA Performance</h2>
-          <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest font-bold">Accountability Engine & Attribution Index</p>
-        </div>
-        <button className="bg-[#0A1628] text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-gray-800 transition-all">
-          <FileDown size={14} />
-          Generate Monthly SLA Report
-        </button>
-      </div>
-
-      <div className="bg-white rounded-[32px] border border-gray-200 overflow-hidden shadow-sm">
+      <div className="bg-white rounded-xl border border-[#E2E8F0] overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Partner & Type</th>
-                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">SLA Index</th>
-                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Breaches (MTD)</th>
-                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Avg Latency</th>
-                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Revenue Impact</th>
-                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">FailGuard Risk</th>
-                <th className="p-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+              <tr className="bg-gray-50 border-b border-[#E2E8F0]">
+                <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">Partner</th>
+                <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest text-center border-l border-[#E2E8F0]/30">SLA Index</th>
+                <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest text-center border-l border-[#E2E8F0]/30">Breaches</th>
+                <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest text-center border-l border-[#E2E8F0]/30">Latency</th>
+                <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest text-right border-l border-[#E2E8F0]/30">Impact</th>
+                <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest text-center border-l border-[#E2E8F0]/30">Risk</th>
+                <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest text-right border-l border-[#E2E8F0]/30">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {SLA_ATTRIBUTIONS.sort((a, b) => a.slaIndex - b.slaIndex).map((partner) => (
-                <tr key={partner.partnerId} className="hover:bg-gray-50/50 transition-colors group">
-                  <td className="p-6">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-black text-[#0A1628]">{partner.partnerName}</span>
-                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{partner.partnerType}</span>
+            <tbody className="divide-y divide-[#E2E8F0]">
+              {SLA_ATTRIBUTIONS.sort((a, b) => a.slaIndex - b.slaIndex).map((partner, idx) => (
+                <tr key={partner.partnerId} className={`h-[44px] ${idx % 2 === 1 ? 'bg-[#F8F9FB]' : 'bg-white'} hover:bg-blue-50/20 transition-colors group`}>
+                  <td className="px-4 border-l border-transparent">
+                    <div className="flex items-center gap-2">
+                       <span className="text-[13px] font-medium text-[#0A1628] leading-none">{partner.partnerName}</span>
+                       <span className="text-[10px] text-[#8B9BB4] font-medium uppercase tracking-tight">{partner.partnerType}</span>
                     </div>
                   </td>
-                  <td className="p-6 text-center">
-                    <div className="flex flex-col items-center gap-1">
-                      <span className={`text-lg font-black font-mono ${getIndexColor(partner.slaIndex)}`}>
-                        {partner.slaIndex}
-                      </span>
-                      <div className="w-12 h-1 bg-gray-100 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full ${partner.slaIndex > 90 ? 'bg-green-500' : partner.slaIndex > 75 ? 'bg-amber-500' : 'bg-red-500'}`}
-                          style={{ width: `${partner.slaIndex}%` }}
-                        />
-                      </div>
-                    </div>
+                  <td className="px-4 text-center border-l border-[#E2E8F0]/30">
+                    <span className={`text-[13px] font-medium font-mono ${getIndexColor(partner.slaIndex)}`}>
+                      {partner.slaIndex}%
+                    </span>
                   </td>
-                  <td className="p-6 text-center">
-                    <span className="text-sm font-bold text-gray-600">{partner.breachesMonth}</span>
+                  <td className="px-4 text-center border-l border-[#E2E8F0]/30">
+                    <span className="text-[13px] font-medium text-[#0A1628]">{partner.breachesMonth}</span>
                   </td>
-                  <td className="p-6 text-center">
-                    <span className="text-sm font-mono font-bold text-gray-600">{partner.avgLatency}ms</span>
+                  <td className="px-4 text-center border-l border-[#E2E8F0]/30">
+                    <span className="text-[13px] font-mono font-medium text-[#8B9BB4]">{partner.avgLatency}ms</span>
                   </td>
-                  <td className="p-6 text-right">
-                    <span className={`text-sm font-mono font-black ${partner.revenueImpact > 5 ? 'text-red-500' : 'text-[#0A1628]'}`}>
+                  <td className="px-4 text-right border-l border-[#E2E8F0]/30">
+                    <span className={`text-[13px] font-medium font-mono ${partner.revenueImpact > 5 ? 'text-red-500' : 'text-[#0A1628]'}`}>
                       ₹ {partner.revenueImpact.toFixed(2)} Cr
                     </span>
                   </td>
-                  <td className="p-6 text-center">
+                  <td className="px-4 text-center border-l border-[#E2E8F0]/30">
                     {getRiskBadge(partner.failGuardRisk)}
                   </td>
-                  <td className="p-6 text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button title="Send Escalation" className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-[#0A1628] hover:text-white transition-all">
-                        <Send size={14} />
-                      </button>
-                      <button title="View Trace Evidence" className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-[#0A1628] hover:text-white transition-all">
-                        <Eye size={14} />
+                  <td className="px-4 text-right border-l border-[#E2E8F0]/30">
+                    <div className="flex justify-end gap-2">
+                      <button title="Send Escalation" className="p-1 px-2 rounded-md bg-[#0A1628] text-white hover:bg-[#00B4D8] transition-all">
+                        <Send size={12} />
                       </button>
                     </div>
                   </td>
@@ -104,40 +85,53 @@ const SLAScorecard: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[32px] border border-gray-200 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-xl bg-green-500/10 text-green-500">
-              <CheckCircle2 size={20} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white p-5 h-[160px] rounded-lg border border-[#E2E8F0] shadow-sm flex flex-col justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#10B981] glossy-icon text-white" style={{ backgroundColor: '#10B981' }}>
+              <Shield size={16} />
             </div>
-            <h4 className="text-xs font-black uppercase tracking-widest text-gray-400">Top Performer</h4>
+            <h4 className="text-[12px] font-medium uppercase tracking-tight text-[#8B9BB4]">Top Performer</h4>
           </div>
-          <p className="text-lg font-black text-[#0A1628]">Primary FIP Gateway</p>
-          <p className="text-xs text-green-500 font-bold mt-1">98.2% SLA Compliance</p>
+          <div>
+            <p className="text-[18px] font-medium text-[#0A1628]">Primary FIP Gateway</p>
+            <p className="text-[12px] text-green-500 font-bold mt-1">98.2% SLA Compliance</p>
+          </div>
         </div>
 
-        <div className="bg-white p-8 rounded-[32px] border border-gray-200 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-xl bg-red-500/10 text-red-500">
-              <AlertTriangle size={20} />
+        <div className="bg-white p-5 h-[160px] rounded-lg border border-[#E2E8F0] shadow-sm flex flex-col justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#EF4444] glossy-icon text-white" style={{ backgroundColor: '#EF4444' }}>
+              <Zap size={16} />
             </div>
-            <h4 className="text-xs font-black uppercase tracking-widest text-gray-400">Critical Breach</h4>
+            <h4 className="text-[12px] font-medium uppercase tracking-tight text-[#8B9BB4]">Critical Breach</h4>
           </div>
-          <p className="text-lg font-black text-[#0A1628]">Partner UPI Node</p>
-          <p className="text-xs text-red-500 font-bold mt-1">64.5% SLA Compliance</p>
+          <div>
+            <p className="text-[18px] font-medium text-[#0A1628]">Partner UPI Node</p>
+            <p className="text-[12px] text-red-500 font-bold mt-1">64.5% SLA Compliance</p>
+          </div>
         </div>
 
-        <div className="bg-white p-8 rounded-[32px] border border-gray-200 shadow-sm">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-500">
-              <TrendingUp size={20} />
+        <div className="bg-white p-5 h-[160px] rounded-lg border border-[#E2E8F0] shadow-sm flex flex-col justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#3B82F6] glossy-icon text-white" style={{ backgroundColor: '#3B82F6' }}>
+              <Activity size={16} />
             </div>
-            <h4 className="text-xs font-black uppercase tracking-widest text-gray-400">Ecosystem Average</h4>
+            <h4 className="text-[12px] font-medium uppercase tracking-tight text-[#8B9BB4]">Ecosystem Average</h4>
           </div>
-          <p className="text-lg font-black text-[#0A1628]">82.4% Index</p>
-          <p className="text-xs text-blue-500 font-bold mt-1">+2.1% vs Last Month</p>
+          <div>
+            <p className="text-[18px] font-medium text-[#0A1628]">82.4% Index</p>
+            <p className="text-[12px] text-[#00B4D8] font-bold mt-1">+2.1% v/s Month Start</p>
+          </div>
         </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .glossy-icon {
+          background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 100%);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.1);
+        }
+      `}} />
     </div>
   );
 };

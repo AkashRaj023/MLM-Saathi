@@ -64,28 +64,13 @@ const AIAssistantConsole: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-5xl mx-auto bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
-      {/* Header */}
-      <div className="p-6 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#0A1628] rounded-xl flex items-center justify-center text-[#00B4D8]">
-            <Bot size={24} />
-          </div>
-          <div>
-            <h2 className="text-lg font-black text-[#0A1628]">AI Assistant Console</h2>
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Operational Intelligence Layer</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-500 rounded-full border border-green-500/20">
-          <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-widest">Model Active</span>
-        </div>
-      </div>
+    <div className="flex flex-col h-full max-w-5xl mx-auto bg-white rounded-xl border border-[#E2E8F0] shadow-sm overflow-hidden animate-fade-in">
+      {/* Header removed as it is in sub-bar */}
 
       {/* Messages Area */}
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-8 space-y-6 bg-[#F8FAFC]"
+        className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#F8FAFC]"
       >
         {messages.map((msg) => (
           <div 
@@ -93,13 +78,13 @@ const AIAssistantConsole: React.FC = () => {
             className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
           >
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-              msg.role === 'assistant' ? 'bg-[#00B4D8] text-white' : 'bg-gray-200 text-gray-600'
+              msg.role === 'assistant' ? 'bg-[#00B4D8] text-white' : 'bg-[#0A1628] text-white'
             }`}>
               {msg.role === 'assistant' ? <Bot size={18} /> : <User size={18} />}
             </div>
-            <div className={`max-w-[80%] p-4 rounded-2xl text-sm font-medium leading-relaxed ${
+            <div className={`max-w-[80%] p-4 rounded-xl text-[14px] font-medium leading-relaxed shadow-sm ${
               msg.role === 'assistant' 
-                ? 'bg-white border border-gray-100 shadow-sm text-[#0A1628]' 
+                ? 'bg-white border border-[#E2E8F0] text-[#0A1628]' 
                 : 'bg-[#0A1628] text-white'
             }`}>
               {msg.content}
@@ -111,7 +96,7 @@ const AIAssistantConsole: React.FC = () => {
             <div className="w-8 h-8 rounded-lg bg-[#00B4D8] text-white flex items-center justify-center shrink-0">
               <Bot size={18} />
             </div>
-            <div className="bg-white border border-gray-100 shadow-sm p-4 rounded-2xl flex gap-1">
+            <div className="bg-white border border-[#E2E8F0] shadow-sm p-4 rounded-xl flex gap-1">
               <div className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce" />
               <div className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.2s]" />
               <div className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce [animation-delay:0.4s]" />
@@ -121,19 +106,19 @@ const AIAssistantConsole: React.FC = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-6 bg-white border-t border-gray-100">
-        <form onSubmit={handleSend} className="relative">
+      <div className="p-6 bg-white border-t border-[#E2E8F0]">
+        <form onSubmit={handleSend} className="relative flex gap-3">
           <input 
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask anything (e.g., 'Diagnose current failures' or 'Trigger remediation')"
-            className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 pr-16 text-sm font-bold text-[#0A1628] outline-none focus:border-[#00B4D8] transition-all"
+            placeholder="Ask anything..."
+            className="flex-1 h-[48px] bg-white border border-[#E2E8F0] rounded-[8px] px-4 text-[14px] text-[#0A1628] outline-none focus:border-[#00B4D8] transition-all placeholder:text-[#8B9BB4]"
           />
           <button 
             type="submit"
             disabled={!input.trim() || isTyping}
-            className="absolute right-2 top-2 bottom-2 w-12 bg-[#0A1628] text-white rounded-xl flex items-center justify-center hover:bg-gray-800 transition-all disabled:opacity-50"
+            className="w-[48px] h-[48px] bg-[#0A1628] text-white rounded-[8px] flex items-center justify-center hover:bg-[#1E293B] transition-all disabled:opacity-50 shadow-lg shadow-[#0A1628]/10"
           >
             <Send size={18} />
           </button>
@@ -151,7 +136,7 @@ const AIAssistantConsole: React.FC = () => {
 const QuickAction = ({ label, onClick }: { label: string; onClick: () => void }) => (
   <button 
     onClick={onClick}
-    className="px-3 py-1.5 rounded-lg border border-gray-100 bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:border-[#00B4D8] hover:text-[#00B4D8] transition-all"
+    className="h-[32px] px-3 rounded-[4px] border border-[#E2E8F0] bg-white text-[11px] font-bold uppercase tracking-widest text-[#8B9BB4] hover:border-[#00B4D8] hover:text-[#00B4D8] transition-all"
   >
     {label}
   </button>

@@ -7,7 +7,8 @@ export const ENTERPRISE_CLIENT = {
   name: "Enterprise Client",
   healthScore: 92,
   aumAtRisk: 14.2,
-  criticalIncidents: 2
+  criticalIncidents: 2,
+  activeIncidents: 5
 };
 
 export const API_NODES: APINode[] = [

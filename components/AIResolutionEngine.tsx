@@ -1,246 +1,185 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Brain, 
-  Activity, 
-  ShieldCheck, 
-  Network, 
   Zap,
-  Info,
-  Settings2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Clock,
+  ChevronRight,
+  Shield,
+  Activity,
+  ArrowRight,
+  Terminal,
+  Play,
+  UserCheck,
+  Cpu
 } from 'lucide-react';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  BarChart,
-  Bar
-} from 'recharts';
 
 const AIResolutionEngine: React.FC = () => {
-  const [activeModel, setActiveModel] = React.useState<'lstm' | 'failguard' | 'sla' | 'auto'>('lstm');
+  const [selectedResolution, setSelectedResolution] = useState(0);
+
+  const activeResolutions = [
+    { id: 'RES-99B', module: 'Revenue Impact', incident: 'INC-2281', confidence: '94%', status: 'PENDING_APPROVAL', time: '2m ago' },
+    { id: 'RES-99A', module: 'API Health', incident: 'INC-2279', confidence: '88%', status: 'EXECUTING', time: '5m ago' },
+    { id: 'RES-98F', module: 'Partner Map', incident: 'INC-2275', confidence: '92%', status: 'COMPLETED', time: '14m ago' },
+  ];
+
+  const traceSteps = [
+    { id: 1, title: 'Input Collection', desc: 'Analyzing Kafka trace logs for Partner UPI Node', status: 'completed' },
+    { id: 2, title: 'Pattern Recognition', desc: 'Detected PII-leakage fingerprint in metadata headers', status: 'completed' },
+    { id: 3, title: 'Impact Calculation', desc: 'Estimated revenue at risk: ₹14.2 Lakhs / Hour', status: 'completed' },
+    { id: 4, title: 'Root Cause Attribution', desc: 'Identified misconfigured Nginx proxy on Vendor side', status: 'completed' },
+    { id: 5, title: 'Proposed Remediation', desc: 'Enable Circuit Breaker & Failover to Ecosystem AA', status: 'active' },
+    { id: 6, title: 'Action Execution', desc: 'Awaiting Administrator Approval', status: 'pending' },
+  ];
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex justify-between items-end">
-        <div>
-          <h2 className="text-2xl font-black text-[#0A1628] uppercase tracking-tighter">AI Actions</h2>
-          <p className="text-xs text-gray-400 mt-1 uppercase tracking-widest font-bold">Exposed Intelligence & Model Governance</p>
-        </div>
-        <div className="flex bg-gray-100 p-1 rounded-xl">
-          {[
-            { id: 'lstm', label: 'LSTMWatch', icon: <Activity size={14} /> },
-            { id: 'failguard', label: 'FailGuard', icon: <ShieldCheck size={14} /> },
-            { id: 'sla', label: 'SLA Engine', icon: <Network size={14} /> },
-            { id: 'auto', label: 'AutoRemediate', icon: <Zap size={14} /> },
-          ].map((m) => (
-            <button
-              key={m.id}
-              onClick={() => setActiveModel(m.id as any)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                activeModel === m.id ? 'bg-white text-[#0A1628] shadow-sm' : 'text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              {m.icon}
-              {m.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="space-y-8 animate-fade-in pb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left: Active Resolutions Table */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-[#E2E8F0] flex justify-between items-center bg-gray-50/50">
+               <h3 className="text-[11px] font-bold uppercase tracking-widest text-[#8B9BB4]">Active AI Actions</h3>
+               <span className="bg-amber-50 text-amber-500 border border-amber-100 text-[10px] font-bold px-2 py-0.5 rounded-[4px]">3 ACTIONS PENDING</span>
+            </div>
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-50/30 border-b border-[#E2E8F0]">
+                  <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">ID</th>
+                  <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">Module</th>
+                  <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">Incident</th>
+                  <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest text-center">Confidence</th>
+                  <th className="px-4 h-[44px] text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">Status</th>
+                  <th className="px-4 h-[44px]"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E2E8F0]">
+                {activeResolutions.map((res, i) => (
+                  <tr 
+                    key={res.id} 
+                    onClick={() => setSelectedResolution(i)}
+                    className={`h-[44px] cursor-pointer transition-colors ${i % 2 === 1 ? 'bg-[#F8F9FB]' : 'bg-white'} ${selectedResolution === i ? 'bg-blue-50/30' : 'hover:bg-gray-50'}`}
+                  >
+                    <td className="px-4 text-[13px] font-bold text-[#0A1628]">{res.id}</td>
+                    <td className="px-4 text-[13px] font-medium text-[#8B9BB4]">{res.module}</td>
+                    <td className="px-4 text-[13px] font-medium text-[#00B4D8]">{res.incident}</td>
+                    <td className="px-4 text-center">
+                       <span className="text-[13px] font-bold text-[#0A1628] font-mono">{res.confidence}</span>
+                    </td>
+                    <td className="px-4">
+                       <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-widest ${
+                         res.status === 'PENDING_APPROVAL' ? 'bg-amber-50 text-amber-500 border border-amber-100' :
+                         res.status === 'EXECUTING' ? 'bg-blue-50 text-blue-500 border border-blue-100' :
+                         'bg-green-50 text-green-500 border border-green-100'
+                       }`}>
+                         {res.status.replace('_', ' ')}
+                       </span>
+                    </td>
+                    <td className="px-4 text-right">
+                       <ChevronRight size={16} className={`transition-transform ${selectedResolution === i ? 'translate-x-1 text-[#00B4D8]' : 'text-[#8B9BB4]'}`} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Model Content */}
-        <div className="lg:col-span-2 space-y-8">
-          {activeModel === 'lstm' && <LSTMWatchView />}
-          {activeModel === 'failguard' && <FailGuardView />}
-          {activeModel === 'sla' && <SLAEngineView />}
-          {activeModel === 'auto' && <AutoRemediateView />}
+          <div className="grid grid-cols-2 gap-4">
+             <div className="bg-white rounded-lg p-5 h-[160px] border border-[#E2E8F0] flex flex-col justify-between">
+                <div className="flex items-center gap-3">
+                   <div className="p-2 bg-green-50 text-green-500 rounded-lg"><CheckCircle2 size={16} /></div>
+                   <p className="text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">Auto-Resolved (24H)</p>
+                </div>
+                <div>
+                   <p className="text-[24px] font-bold text-[#0A1628] tracking-tight">142 Cases</p>
+                   <div className="mt-1 flex items-center gap-2 text-[11px] font-bold text-green-500 uppercase">
+                       <ArrowRight size={12} className="-rotate-45" /> 24% Efficiency Gain
+                   </div>
+                </div>
+             </div>
+             <div className="bg-white rounded-lg p-5 h-[160px] border border-[#E2E8F0] flex flex-col justify-between">
+                <div className="flex items-center gap-3">
+                   <div className="p-2 bg-[#F0F9FF] text-[#00B4D8] rounded-lg"><Clock size={16} /></div>
+                   <p className="text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">Mean Time to Action</p>
+                </div>
+                <div>
+                   <p className="text-[24px] font-bold text-[#0A1628] tracking-tight">18.4 Seconds</p>
+                   <div className="mt-1 text-[11px] font-bold text-[#00B4D8] uppercase">
+                       942m Response Delta Saved
+                   </div>
+                </div>
+             </div>
+          </div>
         </div>
 
-        {/* Model Meta & Controls */}
-        <div className="space-y-6">
-          <div className="bg-[#0A1628] rounded-[32px] p-8 text-white">
-            <h3 className="text-xs font-black uppercase tracking-widest text-[#00B4D8] mb-6 flex items-center gap-2">
-              <Settings2 size={14} />
-              Execution Controls
+        {/* Right: Remediation Trace View */}
+        <div className="space-y-4">
+          <div className="bg-[#0A1628] rounded-xl p-6 text-white min-h-[500px] flex flex-col shadow-xl">
+            <h3 className="text-[11px] font-bold uppercase tracking-widest text-[#00B4D8] mb-6 flex items-center gap-2 border-b border-white/5 pb-4">
+               <Terminal size={14} />
+               Trace: {activeResolutions[selectedResolution].id}
             </h3>
-            <div className="space-y-6">
-              <ControlItem label="Anomaly Sensitivity" value="82%" />
-              <ControlItem label="Confidence Threshold" value="85%" />
-              <div className="pt-4 border-t border-white/5 space-y-4">
-                <ToggleItem label="LSTMWatch Active" active />
-                <ToggleItem label="FailGuard Active" active />
-                <ToggleItem label="AutoRemediate Active" />
-              </div>
+            
+            <div className="flex-1 space-y-6 relative">
+                <div className="absolute left-3 top-2 bottom-2 w-[1px] bg-white/10" />
+
+                {traceSteps.map((step) => (
+                   <div key={step.id} className="flex gap-4 relative">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 z-10 ${
+                        step.status === 'completed' ? 'bg-[#00B4D8]' :
+                        step.status === 'active' ? 'bg-amber-500 animate-pulse' :
+                        'bg-white/5'
+                      }`}>
+                         {step.status === 'completed' ? <CheckCircle2 size={12} className="text-white" /> : <div className="w-1 h-1 rounded-full bg-white/20" />}
+                      </div>
+                      <div className="space-y-1">
+                         <p className={`text-[12px] font-bold tracking-tight ${
+                           step.status === 'completed' ? 'text-white' :
+                           step.status === 'active' ? 'text-amber-500' :
+                           'text-[#8B9BB4]'
+                         }`}>{step.title}</p>
+                         <p className="text-[11px] font-medium text-[#8B9BB4] leading-relaxed line-clamp-1">{step.desc}</p>
+                      </div>
+                   </div>
+                ))}
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-white/5 space-y-4">
+                <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center justify-between">
+                   <div className="flex items-center gap-3">
+                      <UserCheck size={16} className="text-amber-500" />
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-amber-500">Manual Approval</span>
+                   </div>
+                   <Play size={12} className="text-amber-500" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                   <button className="h-[36px] bg-white/5 hover:bg-white/10 rounded-[6px] text-[11px] font-bold uppercase tracking-widest text-white transition-all">Deny</button>
+                   <button className="h-[36px] bg-[#00B4D8] hover:bg-[#0096b4] rounded-[6px] text-[11px] font-bold uppercase tracking-widest text-white transition-all">Execute</button>
+                </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-[32px] p-8 border border-gray-200 shadow-sm">
-            <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-6 flex items-center gap-2">
-              <Info size={14} />
-              Model Performance
-            </h3>
-            <div className="space-y-4">
-              <PerformanceMetric label="Precision" value="94.2%" />
-              <PerformanceMetric label="Recall" value="88.5%" />
-              <PerformanceMetric label="F1 Score" value="91.2%" />
-            </div>
+          <div className="bg-white rounded-lg p-5 border border-[#E2E8F0] shadow-sm">
+             <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-[#F1F5F9] rounded-lg text-[#0A1628]"><Cpu size={16} /></div>
+                <h4 className="text-[11px] font-bold text-[#8B9BB4] uppercase tracking-widest">Model Config</h4>
+             </div>
+             <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                   <span className="text-[11px] font-medium text-[#8B9BB4] uppercase">Version</span>
+                   <span className="text-[11px] font-bold text-[#0A1628]">Conduit-v2.1-AA</span>
+                </div>
+                <div className="flex justify-between items-center">
+                   <span className="text-[11px] font-medium text-[#8B9BB4] uppercase">Precision</span>
+                   <span className="text-[11px] font-bold text-green-500">0.94</span>
+                </div>
+             </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-const LSTMWatchView = () => (
-  <div className="space-y-6">
-    <div className="bg-white rounded-[32px] border border-gray-200 p-8">
-      <h3 className="text-lg font-black text-[#0A1628] mb-6 uppercase tracking-tight">Real-time Latency Anomaly Feed</h3>
-      <div className="space-y-4">
-        {[1, 2, 3, 4].map(i => (
-          <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
-            <div className="flex items-center gap-4">
-              <div className="w-2 h-2 rounded-full bg-amber-500" />
-              <div>
-                <p className="text-sm font-black text-[#0A1628]">Partner UPI Node</p>
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Latency: 485ms (+240ms spike)</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Confidence</p>
-              <p className="text-sm font-black text-amber-500">92%</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-const FailGuardView = () => (
-  <div className="space-y-6">
-    <div className="bg-white rounded-[32px] border border-gray-200 p-8">
-      <h3 className="text-lg font-black text-[#0A1628] mb-6 uppercase tracking-tight">Failure Prediction Table</h3>
-      <table className="w-full text-left">
-        <thead>
-          <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-            <th className="pb-4">Partner Node</th>
-            <th className="pb-4 text-center">Failure Prob.</th>
-            <th className="pb-4">Primary Driver</th>
-            <th className="pb-4 text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {[
-            { name: 'Partner UPI Node', prob: '84%', driver: 'Elevated p95 latency (45m)', action: 'Circuit Breaker' },
-            { name: 'Ecosystem AA', prob: '42%', driver: 'Incremental error rate', action: 'Retry Policy' },
-            { name: 'Primary FIP', prob: '12%', driver: 'Normal baseline', action: 'Monitor' },
-          ].map((row, i) => (
-            <tr key={i}>
-              <td className="py-4 text-sm font-bold text-[#0A1628]">{row.name}</td>
-              <td className="py-4 text-center">
-                <span className={`text-sm font-black font-mono ${parseInt(row.prob) > 70 ? 'text-red-500' : 'text-[#0A1628]'}`}>
-                  {row.prob}
-                </span>
-              </td>
-              <td className="py-4 text-xs text-gray-400 font-medium">{row.driver}</td>
-              <td className="py-4 text-right">
-                <button className="text-[10px] font-black text-[#00B4D8] uppercase tracking-widest hover:underline">Execute</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-);
-
-const SLAEngineView = () => (
-  <div className="space-y-6">
-    <div className="bg-white rounded-[32px] border border-gray-200 p-8">
-      <h3 className="text-lg font-black text-[#0A1628] mb-6 uppercase tracking-tight">Trace Decomposition & Attribution</h3>
-      <div className="space-y-8">
-        {[1, 2].map(i => (
-          <div key={i} className="space-y-3">
-            <div className="flex justify-between items-end">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Incident TR-99281-AX</p>
-              <p className="text-[10px] font-black text-[#00B4D8] uppercase tracking-widest">Attribution Confidence: 98%</p>
-            </div>
-            <div className="h-8 w-full bg-gray-100 rounded-lg overflow-hidden flex">
-              <div className="h-full bg-green-500/40 w-[20%] border-r border-white/20 flex items-center justify-center text-[8px] font-black text-white uppercase">Bank</div>
-              <div className="h-full bg-red-500 w-[65%] border-r border-white/20 flex items-center justify-center text-[8px] font-black text-white uppercase">AA Node</div>
-              <div className="h-full bg-green-500/40 w-[15%] flex items-center justify-center text-[8px] font-black text-white uppercase">FIU</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-const AutoRemediateView = () => (
-  <div className="space-y-6">
-    <div className="bg-white rounded-[32px] border border-gray-200 p-8">
-      <h3 className="text-lg font-black text-[#0A1628] mb-6 uppercase tracking-tight">Automated Remediation Log</h3>
-      <div className="space-y-4">
-        {[
-          { action: 'Circuit Breaker Activation', partner: 'Partner UPI Node', outcome: 'RESOLVED', time: '12ms' },
-          { action: 'Retry Policy Adjustment', partner: 'Ecosystem AA', outcome: 'PARTIAL', time: '8ms' },
-          { action: 'Rate Limit Override', partner: 'Primary FIP', outcome: 'RESOLVED', time: '15ms' },
-        ].map((log, i) => (
-          <div key={i} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-            <div className="flex items-center gap-4">
-              <div className="p-2 rounded-lg bg-white shadow-sm text-[#00B4D8]">
-                <Zap size={16} />
-              </div>
-              <div>
-                <p className="text-sm font-black text-[#0A1628]">{log.action}</p>
-                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{log.partner} | {log.time}</p>
-              </div>
-            </div>
-            <span className={`px-2 py-1 rounded text-[9px] font-black uppercase tracking-widest ${
-              log.outcome === 'RESOLVED' ? 'bg-green-500/10 text-green-500' : 'bg-amber-500/10 text-amber-500'
-            }`}>
-              {log.outcome}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  </div>
-);
-
-const ControlItem = ({ label, value }: { label: string; value: string }) => (
-  <div className="space-y-2">
-    <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-white/40">
-      <span>{label}</span>
-      <span>{value}</span>
-    </div>
-    <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-      <div className="h-full bg-[#00B4D8]" style={{ width: value }} />
-    </div>
-  </div>
-);
-
-const ToggleItem = ({ label, active }: { label: string; active?: boolean }) => (
-  <div className="flex justify-between items-center">
-    <span className="text-[10px] font-black uppercase tracking-widest text-white/60">{label}</span>
-    <div className={`w-8 h-4 rounded-full relative transition-all ${active ? 'bg-[#00B4D8]' : 'bg-white/10'}`}>
-      <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all ${active ? 'right-0.5' : 'left-0.5'}`} />
-    </div>
-  </div>
-);
-
-const PerformanceMetric = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between items-center">
-    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{label}</span>
-    <span className="text-sm font-black text-[#0A1628] font-mono">{value}</span>
-  </div>
-);
 
 export default AIResolutionEngine;
