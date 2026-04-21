@@ -18,7 +18,8 @@ import {
   Zap,
   Activity,
   Target,
-  Search
+  Search,
+  RefreshCw
 } from 'lucide-react';
 import { CONDUIT_USERS, REVENUE_MAPPINGS, SLA_ATTRIBUTIONS } from '../constants.tsx';
 
@@ -123,61 +124,106 @@ const SystemConfiguration: React.FC = () => {
   );
 };
 
-const Stage8RBAC = ({ onSave }: { onSave: () => void }) => (
-  <div className="space-y-8 animate-fade-in">
-    <div className="flex justify-between items-start">
-      <StageHeader title="User Management & RBAC" desc="Granular access control and workspace invitation" />
-      <button className="h-[44px] px-6 bg-[#00B4D8] text-white rounded-xl text-[12px] font-bold flex items-center gap-2 hover:bg-[#0096b4] transition-all">
-        <Plus size={16} />
-        Invite User
-      </button>
-    </div>
+const Stage8RBAC = ({ onSave }: { onSave: () => void }) => {
+  const [isInviting, setIsInviting] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteSent, setInviteSent] = useState(false);
 
-    <div className="space-y-4">
-       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Workspace Members</p>
-       <div className="grid grid-cols-1 gap-3">
-          {CONDUIT_USERS.map((user) => (
-            <div key={user.id} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:border-[#00B4D8]/30 transition-all group">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-[#0A1628] text-[#00B4D8] flex items-center justify-center font-black text-xs">
-                  {user.name.split(' ').map(n => n[0]).join('')}
+  const handleInvite = () => {
+    if (!inviteEmail) return;
+    setIsInviting(true);
+    setTimeout(() => {
+      setIsInviting(false);
+      setInviteSent(true);
+      setInviteEmail('');
+      setTimeout(() => setInviteSent(false), 3000);
+    }, 1500);
+  };
+
+  return (
+    <div className="space-y-8 animate-fade-in">
+      <div className="flex justify-between items-start">
+        <StageHeader title="User Management & RBAC" desc="Granular access control and workspace invitation" />
+        <div className="flex items-center gap-3">
+          {inviteSent && (
+            <span className="text-[10px] font-black text-green-500 uppercase tracking-widest animate-fade-in">Invite Sent!</span>
+          )}
+          <div className="relative">
+            <input 
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder="Enter email to invite..."
+              className="h-[44px] w-[240px] bg-white border border-[#E2E8F0] rounded-xl px-4 text-[12px] font-medium outline-none focus:border-[#00B4D8] transition-all"
+            />
+            <button 
+              onClick={handleInvite}
+              disabled={isInviting || !inviteEmail}
+              className="absolute right-1 top-1 h-[36px] px-4 bg-[#0A1628] text-white rounded-lg text-[11px] font-bold flex items-center gap-2 hover:bg-[#1E293B] transition-all disabled:opacity-50"
+            >
+              {isInviting ? <RefreshCw size={14} className="animate-spin" /> : <Plus size={14} />}
+              {isInviting ? 'Sending...' : 'Invite'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Workspace Members</p>
+         <div className="grid grid-cols-1 gap-3">
+            {CONDUIT_USERS.map((user) => (
+              <div key={user.id} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:border-[#00B4D8]/30 transition-all group">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-[#0A1628] text-[#00B4D8] flex items-center justify-center font-black text-xs shadow-inner">
+                    {user.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                     <p className="text-[14px] font-bold text-[#0A1628]">{user.name}</p>
+                     <p className="text-[11px] text-gray-400 font-medium">{user.email}</p>
+                  </div>
                 </div>
-                <div>
-                   <p className="text-[14px] font-bold text-[#0A1628]">{user.name}</p>
-                   <p className="text-[11px] text-gray-400 font-medium">{user.email}</p>
+                <div className="flex items-center gap-8">
+                   <div className="text-right">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Role</p>
+                      <span className="px-2 py-0.5 bg-[#00B4D8]/10 text-[#00B4D8] rounded text-[10px] font-bold">{user.role}</span>
+                   </div>
+                   <div className="text-right">
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Last Login</p>
+                      <p className="text-[11px] font-bold text-[#0A1628]">2h ago</p>
+                   </div>
+                   <button className="p-2 text-gray-300 hover:text-red-500 transition-colors">
+                      <Trash2 size={16} />
+                   </button>
                 </div>
               </div>
-              <div className="flex items-center gap-8">
-                 <div className="text-right">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Role</p>
-                    <span className="px-2 py-0.5 bg-[#00B4D8]/10 text-[#00B4D8] rounded text-[10px] font-bold">{user.role}</span>
-                 </div>
-                 <div className="text-right">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Last Login</p>
-                    <p className="text-[11px] font-bold text-[#0A1628]">2h ago</p>
-                 </div>
-                 <button className="p-2 text-gray-300 hover:text-red-500 transition-colors">
-                    <Trash2 size={16} />
-                 </button>
-              </div>
-            </div>
-          ))}
-       </div>
-    </div>
+            ))}
+         </div>
+      </div>
 
-    <div className="p-6 bg-[#0A1628] rounded-2xl text-white">
-       <div className="flex items-center gap-3 mb-4">
-          <Lock size={18} className="text-[#00B4D8]" />
-          <span className="text-[14px] font-bold">RBAC Strict Mode</span>
-       </div>
-       <p className="text-[12px] text-gray-400 mb-6 leading-relaxed">When active, users can only access modules explicitly defined in their permission scope. All unauthorized module attempts are logged for RBI audit compliance.</p>
-       <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
-          <span className="text-[11px] font-bold uppercase tracking-widest">Enforce Permission Guards</span>
-          <Toggle active />
-       </div>
+      <div className="p-8 bg-gradient-to-br from-[#0A1628] to-[#1E293B] rounded-[24px] text-white shadow-xl shadow-[#0A1628]/20 relative overflow-hidden">
+         <div className="absolute top-0 right-0 p-8 opacity-5">
+            <Lock size={120} />
+         </div>
+         <div className="relative z-10">
+           <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-[#00B4D8]/20 rounded-lg">
+                <Lock size={18} className="text-[#00B4D8]" />
+              </div>
+              <span className="text-[16px] font-bold">RBAC Strict Mode</span>
+           </div>
+           <p className="text-[13px] text-gray-400 mb-8 max-w-xl leading-relaxed">When active, users can only access modules explicitly defined in their permission scope. All unauthorized module attempts are logged for RBI audit compliance and flagged for security review.</p>
+           <div className="flex items-center justify-between p-5 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
+              <div className="flex flex-col">
+                 <span className="text-[11px] font-black uppercase tracking-[0.2em]">Enforce Permission Guards</span>
+                 <span className="text-[9px] font-bold text-[#00B4D8] mt-1">Audit Log Level: HIGH</span>
+              </div>
+              <Toggle active />
+           </div>
+         </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Stage1Input = ({ onSave }: { onSave: () => void }) => (
   <div className="space-y-8">

@@ -13,7 +13,9 @@ import {
   CircuitBoard,
   User,
   ArrowLeft,
-  Activity as PulseIcon
+  Activity as PulseIcon,
+  Users,
+  ChevronRight
 } from 'lucide-react';
 import { ENTERPRISE_CLIENT } from '../constants.tsx';
 
@@ -49,7 +51,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
   return (
     <div className="flex flex-col h-screen bg-[#F0F4F8] font-sans text-[#0A1628] overflow-hidden">
       {/* Task 2: Horizontal Top Navigation Bar (52px) */}
-      <nav className="h-[52px] w-full bg-[#0A1628] relative overflow-hidden flex items-center px-6 shrink-0 z-[60]">
+      <nav className="h-[52px] w-full bg-[#0A1628] relative flex items-center px-6 shrink-0 z-[60]">
         {/* Animated Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#0A1628] via-[#0D1F3C] to-[#0A1628] pointer-events-none" />
         
@@ -105,11 +107,11 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
 
         {/* System Admin Avatar with Rotating Ring */}
         <div className="relative shrink-0 ml-4 z-[70] group">
-          <div className="absolute inset-[-4px] rounded-full border-2 border-dashed border-[#00B4D8]/10 animate-spin-slow pointer-events-none group-hover:border-[#00B4D8]/40 transition-all" />
+          <div className="absolute inset-[-6px] rounded-full border-2 border-[#00B4D8]/20 group-hover:border-[#00B4D8]/50 transition-all pointer-events-none" />
           <button 
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black transition-all border relative z-[80] ${
-              isProfileOpen ? 'bg-[#00B4D8] border-[#00B4D8] text-white shadow-[0_0_15px_rgba(0,180,216,0.5)]' : 'bg-white/10 text-white border-white/10 hover:bg-white/20'
+            className={`w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-black transition-all border-2 relative z-[80] shadow-lg ${
+              isProfileOpen ? 'bg-[#00B4D8] border-[#00B4D8] text-white' : 'bg-[#1E293B] text-white border-white/10 hover:border-[#00B4D8]/50'
             }`}
           >
             SA
@@ -119,45 +121,70 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
             <>
               {/* Click-outside backdrop */}
               <div 
-                className="fixed inset-0 z-[65] bg-black/0" 
+                className="fixed inset-0 z-[65] bg-black/5 backdrop-blur-[2px]" 
                 onClick={() => setIsProfileOpen(false)} 
               />
-              <div className="absolute right-0 mt-3 w-[240px] bg-white border border-gray-200 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden z-[70] animate-fade-in origin-top-right">
-                <div className="p-5 border-b border-gray-100 bg-gray-50/50">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-[#00B4D8] text-white flex items-center justify-center font-black text-xs shadow-inner">SA</div>
+              <div className="absolute right-0 mt-4 w-[280px] bg-white border border-[#E2E8F0] rounded-[20px] shadow-[0_24px_60px_rgba(10,22,40,0.18)] overflow-hidden z-[90] animate-fade-in origin-top-right">
+                <div className="p-6 border-b border-[#F1F5F9] bg-[#F8FAFC]">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00B4D8] to-[#0077B6] text-white flex items-center justify-center font-black text-sm shadow-lg shadow-[#00B4D8]/20">SA</div>
                     <div>
-                      <p className="text-[12px] font-black text-[#0A1628] leading-tight uppercase tracking-wider">System Admin</p>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Active Now</span>
+                      <p className="text-[14px] font-black text-[#0A1628] leading-tight uppercase tracking-widest">System Admin</p>
+                      <div className="flex items-center gap-2 mt-1">
+                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">CTO Role</span>
                       </div>
                     </div>
                   </div>
-                  <p className="text-[10px] text-gray-400 font-medium px-1">admin@conduit.inc</p>
+                  <div className="p-3 bg-white rounded-xl border border-gray-100">
+                    <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-1 px-1">Organization</p>
+                    <p className="text-[12px] font-bold text-[#0A1628] px-1 truncate">Conduit Infrastructure Inc.</p>
+                  </div>
                 </div>
-                <div className="py-2">
+                <div className="p-2">
                   <button 
                     onClick={() => { setActiveTab('config'); setIsProfileOpen(false); }}
-                    className="w-full text-left px-5 py-3 text-[12px] hover:bg-gray-50 flex items-center gap-3 text-gray-600 transition-colors group"
+                    className="w-full text-left px-5 py-3.5 text-[12px] hover:bg-gray-50 rounded-xl flex items-center justify-between text-gray-600 transition-all group"
                   >
-                    <User size={14} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
-                    <span className="font-semibold">Security Settings</span>
+                    <div className="flex items-center gap-3">
+                      <Users size={16} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
+                      <span className="font-bold">RBAC & Invites</span>
+                    </div>
+                    <ChevronRight size={14} className="text-gray-300 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                  <button 
+                    onClick={() => { setActiveTab('integrations'); setIsProfileOpen(false); }}
+                    className="w-full text-left px-5 py-3.5 text-[12px] hover:bg-gray-50 rounded-xl flex items-center justify-between text-gray-600 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Network size={16} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
+                      <span className="font-bold">API & Data Links</span>
+                    </div>
+                    <ChevronRight size={14} className="text-gray-300 group-hover:translate-x-1 transition-transform" />
                   </button>
                   <button 
                     onClick={() => { setActiveTab('config'); setIsProfileOpen(false); }}
-                    className="w-full text-left px-5 py-3 text-[12px] hover:bg-gray-50 flex items-center gap-3 text-gray-600 transition-colors group"
+                    className="w-full text-left px-5 py-3.5 text-[12px] hover:bg-gray-50 rounded-xl flex items-center justify-between text-gray-600 transition-all group"
                   >
-                    <Settings size={14} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
-                    <span className="font-semibold">Workspace Config</span>
+                    <div className="flex items-center gap-3">
+                      <Settings size={16} className="text-[#8B9BB4] group-hover:text-[#00B4D8]" />
+                      <span className="font-bold">Workspace Config</span>
+                    </div>
+                    <ChevronRight size={14} className="text-gray-300 group-hover:translate-x-1 transition-transform" />
                   </button>
-                  <div className="my-1 border-t border-gray-100" />
+                  
+                  <div className="my-2 border-t border-[#F1F5F9]" />
                   <button 
                     onClick={() => { onLogout(); setIsProfileOpen(false); }}
-                    className="w-full text-left px-5 py-3 text-[12px] text-red-500 hover:bg-red-50 flex items-center gap-3 transition-colors group"
+                    className="w-full text-left px-5 py-4 text-[12px] text-red-500 hover:bg-red-50 rounded-xl flex items-center gap-3 transition-all group"
                   >
-                    <LogOut size={14} className="text-red-400 group-hover:scale-110 transition-transform" />
-                    <span className="font-black uppercase tracking-[0.2em] text-[9px]">Terminated Session</span>
+                    <div className="p-2 bg-red-100 rounded-lg text-red-600 group-hover:scale-110 transition-transform">
+                      <LogOut size={16} />
+                    </div>
+                    <div className="flex flex-col">
+                       <span className="font-black uppercase tracking-[0.2em] text-[10px]">Terminate Session</span>
+                       <span className="text-[9px] font-bold text-red-400 mt-0.5">Logout from admin console</span>
+                    </div>
                   </button>
                 </div>
               </div>
