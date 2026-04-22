@@ -203,7 +203,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
         </div>
         
         {/* Time filter pills */}
-        {(activeTab === 'hub' || activeTab === 'config') && (
+        {activeTab === 'hub' && (
           <div className="flex items-center gap-1 bg-gray-100 p-0.5 rounded-lg border border-gray-200">
             {['LIVE', '1H', '6H', '24H', 'MTD'].map((filter) => (
               <button 

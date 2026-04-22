@@ -272,12 +272,24 @@ const Stage2Monitor = ({ onSave }: { onSave: () => void }) => (
         </tbody>
       </table>
     </div>
-    <div className="flex items-center justify-between p-6 bg-gray-50 rounded-2xl border border-gray-100">
-       <div>
-         <p className="text-sm font-bold text-[#0A1628]">Throughput Monitoring</p>
-         <p className="text-[10px] text-gray-400 font-bold uppercase">Trigger alerts based on transaction volume anomalies</p>
+    
+    <div className="flex flex-col md:flex-row items-center gap-6 p-6 bg-gray-50 rounded-2xl border border-gray-100">
+       <div className="flex-1 w-full">
+         <p className="text-sm font-bold text-[#0A1628]">Global SLA Availability Threshold</p>
+         <p className="text-[10px] text-gray-400 font-bold uppercase mb-4">Minimum uptime percentage required across all ecosystem nodes</p>
+         <div className="flex items-center gap-4">
+            <input type="range" min="95.00" max="99.99" step="0.01" className="flex-1 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#00B4D8]" />
+            <span className="text-[12px] font-black text-[#0A1628] w-12 text-right">99.90%</span>
+         </div>
        </div>
-       <Toggle active />
+       <div className="hidden md:block w-[1px] h-12 bg-gray-200 mx-2" />
+       <div className="shrink-0 flex items-center justify-between w-full md:w-auto gap-12">
+         <div>
+           <p className="text-sm font-bold text-[#0A1628]">Throughput Monitoring</p>
+           <p className="text-[10px] text-gray-400 font-bold uppercase">Transaction volume anomalies</p>
+         </div>
+         <Toggle active />
+       </div>
     </div>
     <ConfigInput label="Data Retention Period (Days)" placeholder="30" />
   </div>

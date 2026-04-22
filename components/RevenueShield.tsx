@@ -38,23 +38,22 @@ import {
 import { motion, useAnimation, AnimatePresence } from 'motion/react';
 import { REVENUE_TRENDS, REVENUE_MAPPINGS, SLA_ATTRIBUTIONS, ENTERPRISE_CLIENT } from '../constants.tsx';
 
+const ORIGINAL_NODES = [
+  { id: 'input', title: 'Input Collector', icon: <Plug size={14} />, color: '#00B4D8', x: 80, y: 60, metricName: 'API Ingest', value: 14282, status: 'active' },
+  { id: 'monitor', title: 'Monitoring Node', icon: <Pulse size={14} />, color: '#3B82F6', x: 280, y: 160, metricName: 'p95 Latency', value: 142, status: 'active', suffix: 'ms' },
+  { id: 'detect', title: 'Detection Node', icon: <Target size={14} />, color: '#F59E0B', x: 480, y: 280, metricName: 'Anomalies', value: 14, status: 'warning' },
+  { id: 'predict', title: 'Prediction Node', icon: <Brain size={14} />, color: '#F97316', x: 740, y: 220, metricName: 'Risk Index', value: 88, status: 'warning', suffix: '%' },
+  { id: 'attribute', title: 'Attribution Node', icon: <Box size={14} />, color: '#8B5CF6', x: 960, y: 100, metricName: 'Attributed Loss', value: 4.28, status: 'active', prefix: '₹', suffix: ' L' },
+  { id: 'revenue', title: 'Revenue Node', icon: <ShieldAlert size={14} />, color: '#EF4444', x: 1180, y: 50, metricName: 'Leakage Blocked', value: 5.12, status: 'critical', prefix: '₹', suffix: ' Cr' },
+  { id: 'output', title: 'Output Node', icon: <Zap size={14} />, color: '#22C55E', x: 1400, y: 180, metricName: 'ROI Multiple', value: 14.8, status: 'active', suffix: 'x' },
+];
+
 const RevenueShield: React.FC = () => {
   const [scale, setScale] = useState(0.85);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   
-  // Task 1: Pipeline Nodes Data & Positions
-  const pipelineNodes = [
-    { id: 'input', title: 'Input Collector', icon: <Plug size={14} />, color: '#00B4D8', x: 80, y: 60, metricName: 'API Ingest', value: 14282, status: 'active' },
-    { id: 'monitor', title: 'Monitoring Node', icon: <Pulse size={14} />, color: '#3B82F6', x: 280, y: 160, metricName: 'p95 Latency', value: 142, status: 'active', suffix: 'ms' },
-    { id: 'detect', title: 'Detection Node', icon: <Target size={14} />, color: '#F59E0B', x: 480, y: 280, metricName: 'Anomalies', value: 14, status: 'warning' },
-    { id: 'predict', title: 'Prediction Node', icon: <Brain size={14} />, color: '#F97316', x: 740, y: 220, metricName: 'Risk Index', value: 88, status: 'warning', suffix: '%' },
-    { id: 'attribute', title: 'Attribution Node', icon: <Box size={14} />, color: '#8B5CF6', x: 960, y: 100, metricName: 'Attributed Loss', value: 4.28, status: 'active', prefix: '₹', suffix: ' L' },
-    { id: 'revenue', title: 'Revenue Node', icon: <ShieldAlert size={14} />, color: '#EF4444', x: 1180, y: 50, metricName: 'Leakage Blocked', value: 5.12, status: 'critical', prefix: '₹', suffix: ' Cr' },
-    { id: 'output', title: 'Output Node', icon: <Zap size={14} />, color: '#22C55E', x: 1400, y: 180, metricName: 'ROI Multiple', value: 14.8, status: 'active', suffix: 'x' },
-  ];
-
   const connections = [
     { from: 'input', to: 'monitor' },
     { from: 'monitor', to: 'detect' },
@@ -63,6 +62,22 @@ const RevenueShield: React.FC = () => {
     { from: 'attribute', to: 'revenue' },
     { from: 'revenue', to: 'output' },
   ];
+  
+  const [nodes, setNodes] = useState(ORIGINAL_NODES);
+
+  const handleNodeDrag = (id: string, info: any) => {
+    // Info contains delta relative to previous frame
+    setNodes(prev => prev.map(n => {
+      if (n.id === id) {
+        return { 
+          ...n, 
+          x: n.x + (info.delta.x / scale), 
+          y: n.y + (info.delta.y / scale) 
+        };
+      }
+      return n;
+    }));
+  };
   
   // Task 5: Calculator State
   const [aum, setAum] = useState(50000);
@@ -124,7 +139,7 @@ const RevenueShield: React.FC = () => {
           <button onClick={() => setScale(prev => Math.max(prev - 0.1, 0.4))} className="w-8 h-8 bg-white border border-[#E2E8F0] rounded-lg shadow-sm flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-[#00B4D8] transition-all">
             <Minus size={14} />
           </button>
-          <button onClick={() => { setScale(0.85); setOffset({ x: 0, y: 0 }); }} className="w-8 h-8 bg-white border border-[#E2E8F0] rounded-lg shadow-sm flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-[#00B4D8] transition-all">
+          <button onClick={() => { setScale(0.85); setOffset({ x: 0, y: 0 }); setNodes(ORIGINAL_NODES); }} className="w-8 h-8 bg-white border border-[#E2E8F0] rounded-lg shadow-sm flex items-center justify-center text-gray-500 hover:bg-gray-50 hover:text-[#00B4D8] transition-all">
             <RefreshCw size={14} />
           </button>
         </div>
@@ -151,47 +166,57 @@ const RevenueShield: React.FC = () => {
                 </marker>
               </defs>
               {connections.map((conn, idx) => {
-                const fromNode = pipelineNodes.find(n => n.id === conn.from);
-                const toNode = pipelineNodes.find(n => n.id === conn.to);
+                const fromNode = nodes.find(n => n.id === conn.from);
+                const toNode = nodes.find(n => n.id === conn.to);
                 if (!fromNode || !toNode) return null;
 
-                const outX = fromNode.x + 172;
-                const outY = fromNode.y + 115;
+                // Match with Port Y position (Bottom bar is roughly at node height 130 - 12)
+                const outX = fromNode.x + 172; 
+                const outY = fromNode.y + 118;
                 const inX = toNode.x;
-                const inY = toNode.y + 15;
+                const inY = toNode.y + 118;
 
                 const cp1x = outX + (inX - outX) * 0.5;
                 const cp1y = outY;
                 const cp2x = outX + (inX - outX) * 0.5;
                 const cp2y = inY;
                 
-                const isWarning = fromNode.status !== 'active' || toNode.status !== 'active';
-                const alertColor = toNode.status === 'critical' ? '#EF4444' : toNode.status === 'warning' ? '#F59E0B' : '#94A3B8';
+                // Color logic based on downstream node status
+                const connectorColor = 
+                  toNode.status === 'critical' ? '#EF4444' : // Red for danger
+                  toNode.status === 'warning' ? '#F59E0B' :  // Yellow for warning
+                  '#22C55E';                                // Green for safe
 
                 return (
                   <path 
                     key={`bezier-${idx}`}
                     d={`M ${outX} ${outY} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${inX} ${inY}`}
                     fill="none"
-                    stroke={isWarning ? alertColor : '#94A3B8'}
-                    strokeWidth="1.5"
+                    stroke={connectorColor}
+                    strokeWidth="2"
                     strokeDasharray="6 4"
                     className="animated-connector"
-                    style={{ transition: 'stroke 500ms ease' }}
+                    style={{ 
+                      transition: 'stroke 500ms ease',
+                      filter: `drop-shadow(0 0 2px ${connectorColor}44)` 
+                    }}
                   />
                 );
               })}
             </svg>
 
             {/* Pipeline Nodes */}
-            {pipelineNodes.map((node, i) => (
+            {nodes.map((node, i) => (
               <motion.div
                 key={node.id}
+                drag
+                dragMomentum={false}
+                dragElastic={0}
+                onDrag={(_, info) => handleNodeDrag(node.id, info)}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08, duration: 0.35, ease: 'easeOut' }}
-                className="absolute node-card w-[172px] h-[130px] bg-white rounded-[10px] border border-[#E2E8F0] shadow-[0_2px_12px_rgba(0,0,0,0.07)] flex flex-col pointer-events-auto"
-                style={{ left: node.x, top: node.y, borderTop: `3px solid ${node.color}` }}
+                className="absolute node-card w-[172px] h-[130px] bg-white rounded-[10px] border border-[#E2E8F0] shadow-[0_2px_12px_rgba(0,0,0,0.07)] flex flex-col pointer-events-auto cursor-move"
+                style={{ left: node.x, top: node.y, borderTop: `3px solid ${node.color}`, x: 0, y: 0 }}
               >
                 {/* Header Row */}
                 <div className="h-[28px] px-3 flex items-center justify-between border-b border-[#F1F5F9]">
